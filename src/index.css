@@ -1,0 +1,213 @@
+/* ─────────────────────────────────────────────────────────
+   MOPAR OFFICIAL FONTS — @font-face
+   Served from /public/fonts/
+───────────────────────────────────────────────────────── */
+
+/* Tungsten Condensed — display / hero headlines */
+@font-face {
+  font-family: 'Tungsten';
+  src: url('/fonts/TungstenCondensed-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Tungsten';
+  src: url('/fonts/TungstenCondensed-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Titling Gothic FB Condensed — section titles, cards, nav */
+@font-face {
+  font-family: 'TitlingGothic';
+  src: url('/fonts/TitlingGothicFBCond-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'TitlingGothic';
+  src: url('/fonts/TitlingGothicFBCond-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Titling Gothic FB Normal — body text, descriptions */
+@font-face {
+  font-family: 'TitlingGothic';
+  src: url('/fonts/TitlingGothicFBNor-Med.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'TitlingGothic';
+  src: url('/fonts/TitlingGothicFBNor-Reg.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─────────────────────────────────────────────────────────
+   TAILWIND DIRECTIVES
+───────────────────────────────────────────────────────── */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────
+   BASE
+───────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #07070C;
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'TitlingGothic', 'Inter', system-ui, sans-serif;
+    font-weight: 400;
+  }
+
+  ::selection {
+    background-color: rgba(0, 102, 179, 0.35);
+    color: #ffffff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    background: #07070C;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 102, 179, 0.5);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   COMPONENTS
+───────────────────────────────────────────────────────── */
+@layer components {
+
+  /* Tungsten = big display headlines (hero, main titles) */
+  .font-display {
+    font-family: 'Tungsten', 'Barlow Condensed', Impact, sans-serif;
+    font-weight: 900;
+  }
+
+  /* TitlingGothic = section titles, cards, UI  */
+  .font-condensed {
+    font-family: 'TitlingGothic', 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+  }
+
+  /* Reveal animation */
+  .reveal-up {
+    opacity: 0;
+    animation: revealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* Subtle carbon-fiber texture */
+  .bg-texture {
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.012) 0px,
+        rgba(255, 255, 255, 0.012) 1px,
+        transparent 1px,
+        transparent 9px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, 0.012) 0px,
+        rgba(255, 255, 255, 0.012) 1px,
+        transparent 1px,
+        transparent 9px
+      );
+  }
+
+  /* Hero stadium atmosphere */
+  .bg-stadium {
+    background:
+      radial-gradient(ellipse 55% 45% at 18% -5%, rgba(255, 255, 255, 0.05) 0%, transparent 65%),
+      radial-gradient(ellipse 55% 45% at 82% -5%, rgba(255, 255, 255, 0.04) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 55% at 50% 25%, rgba(0, 102, 179, 0.08) 0%, transparent 70%),
+      #07070C;
+  }
+
+  /* Premium divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.06) 20%,
+      rgba(255, 255, 255, 0.06) 80%,
+      transparent
+    );
+  }
+
+  /* Module card base */
+  .module-card {
+    @apply relative flex flex-col p-6 border border-white/[0.06] bg-white/[0.03]
+           transition-all duration-300 cursor-pointer rounded-[2px];
+  }
+
+  .module-card:hover {
+    @apply bg-white/[0.055] border-white/[0.12];
+    transform: translateY(-2px);
+  }
+
+  .module-card.is-open {
+    @apply bg-white/[0.06] border-mopar-blue/50;
+    box-shadow: 0 0 32px rgba(0, 102, 179, 0.1), inset 0 0 0 1px rgba(0, 102, 179, 0.08);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   UTILITIES
+───────────────────────────────────────────────────────── */
+@layer utilities {
+  .tracking-label {
+    letter-spacing: 0.28em;
+  }
+
+  .text-shadow-blue {
+    text-shadow: 0 0 40px rgba(0, 102, 179, 0.4);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   KEYFRAMES
+───────────────────────────────────────────────────────── */
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

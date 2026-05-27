@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.local
+.DS_Store
+*.log
+
+# Archivos de fuentes y logos del root (no son del proyecto web)
+Fontes Mopar/
+/Citroen-Logo.png
+/Logo Mopar 2 Cores 300DPI 10cm RGB.png
+/Peugeot-Blason-Flat-RVB-WBG.png
+/fiat-logo.png
+/fondo.png
+/jeep_logo.png
+/logo_ram.png
