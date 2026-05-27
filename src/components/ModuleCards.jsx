@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react'
 import { ChevronDown, FolderOpen, Clock, FileText, Loader, Download, Eye } from 'lucide-react'
 import { MODULES, BRANDS, getMockContent, BBCC_LINKS } from '../data/index.js'
 import EvidenciaForm from './EvidenciaForm.jsx'
@@ -221,6 +222,16 @@ function ModuleCard({ mod, isOpen, onClick }) {
 
 // ─── Sección principal ─────────────────────────────────────────────
 export default function ModuleCards({ openModule, setOpenModule, selectedBrands, setSelectedBrands }) {
+  const panelRef = useRef(null)
+
+  useEffect(() => {
+    if (openModule && panelRef.current) {
+      setTimeout(() => {
+        panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 50)
+    }
+  }, [openModule])
+
   const handleCardClick = (id) => {
     setOpenModule((prev) => (prev === id ? null : id))
   }
@@ -248,6 +259,7 @@ export default function ModuleCards({ openModule, setOpenModule, selectedBrands,
         {/* Panel inferior */}
         {openModule && (
           <div
+            ref={panelRef}
             className="mt-3 border border-white/[0.06] bg-white/[0.02] rounded-[2px] px-6 py-6"
             style={{ animation: 'slideDown 0.3s cubic-bezier(0.22,1,0.36,1) forwards' }}
           >
