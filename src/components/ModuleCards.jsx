@@ -1,4 +1,4 @@
-import { ChevronDown, FolderOpen, Clock, FileText, Loader } from 'lucide-react'
+import { ChevronDown, FolderOpen, Clock, FileText, Loader, Download, Eye } from 'lucide-react'
 import { MODULES, BRANDS, getMockContent, BBCC_LINKS } from '../data/index.js'
 import EvidenciaForm from './EvidenciaForm.jsx'
 
