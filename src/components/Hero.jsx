@@ -69,12 +69,12 @@ export default function Hero() {
       />
 
       {/* ── Título: arriba en mobile / abajo-izquierda en desktop ── */}
-      <div className="relative z-20 flex-1 flex flex-col justify-start pt-28 sm:justify-end sm:pt-24 sm:pb-14 max-w-[1360px] mx-auto w-full px-8">
+      <div className="relative z-20 flex-1 flex flex-col justify-start pt-20 sm:justify-end sm:pt-24 sm:pb-14 max-w-[1360px] mx-auto w-full px-8">
         <h1 className="font-display leading-[0.88]">
           <span
             className="reveal-up block text-white"
             style={{
-              fontSize: 'clamp(2.4rem, 9vw, 8.5rem)',
+              fontSize: 'clamp(3rem, 9vw, 8.5rem)',
               animationDelay: '0.15s',
               textShadow: '0 2px 24px rgba(0,0,0,0.9)',
             }}
@@ -84,7 +84,7 @@ export default function Hero() {
           <span
             className="reveal-up flex items-baseline gap-x-4"
             style={{
-              fontSize: 'clamp(2rem, 7.5vw, 7rem)',
+              fontSize: 'clamp(2.5rem, 7.5vw, 7rem)',
               animationDelay: '0.35s',
               textShadow: '0 2px 24px rgba(0,0,0,0.9)',
             }}
