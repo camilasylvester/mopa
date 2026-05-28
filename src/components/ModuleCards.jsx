@@ -223,6 +223,31 @@ function ModuleCard({ mod, isOpen, onClick }) {
   )
 }
 
+// ─── Contenido del panel (reutilizado en mobile y desktop) ────────
+function PanelInner({ moduleId, selectedBrands, onBrandSelect }) {
+  return (
+    <>
+      <div className="flex items-center gap-3 mb-4">
+        <span className="w-4 h-px bg-mopar-blue" />
+        <span className="text-white/40 text-[0.68rem] uppercase tracking-label font-semibold">
+          {MODULES.find((m) => m.id === moduleId)?.title}
+        </span>
+      </div>
+      {moduleId === 'bbcc' ? (
+        <BBCCContent />
+      ) : moduleId === 'evidencia-pop' ? (
+        <EvidenciaForm />
+      ) : (
+        <BrandSelector
+          moduleId={moduleId}
+          selected={selectedBrands[moduleId] ?? null}
+          onSelect={(brandId) => onBrandSelect(moduleId, brandId)}
+        />
+      )}
+    </>
+  )
+}
+
 // ─── Sección principal ─────────────────────────────────────────────
 export default function ModuleCards({ openModule, setOpenModule, selectedBrands, setSelectedBrands }) {
   const handleCardClick = (id) => {
@@ -233,50 +258,55 @@ export default function ModuleCards({ openModule, setOpenModule, selectedBrands,
     setSelectedBrands((prev) => ({ ...prev, [moduleId]: brandId }))
   }
 
+  const panelCls = 'border border-white/[0.06] bg-white/[0.02] rounded-[2px] px-6 py-6'
+
   return (
     <section id="modulos" className="bg-[#07070C] pt-10 pb-20">
       <div className="max-w-[1360px] mx-auto px-6">
 
-        {/* Grid de 5 cards — sin header, directo al grano */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        {/* ── Mobile: 1 columna con acordeón inline ── */}
+        <div className="flex flex-col gap-3 lg:hidden">
           {MODULES.map((mod) => (
-            <ModuleCard
-              key={mod.id}
-              mod={mod}
-              isOpen={openModule === mod.id}
-              onClick={() => handleCardClick(mod.id)}
-            />
+            <div key={mod.id}>
+              <ModuleCard
+                mod={mod}
+                isOpen={openModule === mod.id}
+                onClick={() => handleCardClick(mod.id)}
+              />
+              {openModule === mod.id && (
+                <div
+                  ref={(el) => { if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50) }}
+                  className={`mt-1 ${panelCls}`}
+                  style={{ animation: 'slideDown 0.3s cubic-bezier(0.22,1,0.36,1) forwards' }}
+                >
+                  <PanelInner moduleId={mod.id} selectedBrands={selectedBrands} onBrandSelect={handleBrandSelect} />
+                </div>
+              )}
+            </div>
           ))}
         </div>
 
-        {/* Panel inferior */}
-        {openModule && (
-          <div
-            ref={(el) => { if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 320) }}
-            className="mt-3 border border-white/[0.06] bg-white/[0.02] rounded-[2px] px-6 py-6"
-            style={{ animation: 'slideDown 0.3s cubic-bezier(0.22,1,0.36,1) forwards' }}
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <span className="w-4 h-px bg-mopar-blue" />
-              <span className="text-white/40 text-[0.68rem] uppercase tracking-label font-semibold">
-                {MODULES.find((m) => m.id === openModule)?.title}
-              </span>
-            </div>
-
-            {/* Contenido según módulo */}
-            {openModule === 'bbcc' ? (
-              <BBCCContent />
-            ) : openModule === 'evidencia-pop' ? (
-              <EvidenciaForm />
-            ) : (
-              <BrandSelector
-                moduleId={openModule}
-                selected={selectedBrands[openModule] ?? null}
-                onSelect={(brandId) => handleBrandSelect(openModule, brandId)}
+        {/* ── Desktop: grid 5 columnas + panel abajo ── */}
+        <div className="hidden lg:block">
+          <div className="grid grid-cols-5 gap-3">
+            {MODULES.map((mod) => (
+              <ModuleCard
+                key={mod.id}
+                mod={mod}
+                isOpen={openModule === mod.id}
+                onClick={() => handleCardClick(mod.id)}
               />
-            )}
+            ))}
           </div>
-        )}
+          {openModule && (
+            <div
+              className={`mt-3 ${panelCls}`}
+              style={{ animation: 'slideDown 0.3s cubic-bezier(0.22,1,0.36,1) forwards' }}
+            >
+              <PanelInner moduleId={openModule} selectedBrands={selectedBrands} onBrandSelect={handleBrandSelect} />
+            </div>
+          )}
+        </div>
 
         <div className="divider mt-16" />
       </div>
