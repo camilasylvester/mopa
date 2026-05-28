@@ -1,4 +1,4 @@
-import { ChevronDown, FolderOpen, Clock, FileText, Loader, Download, Eye } from 'lucide-react'
+import { ChevronDown, FolderOpen, Clock, FileText, Loader, Download, Eye, Package, Monitor, Camera, QrCode } from 'lucide-react'
 import { MODULES, BRANDS, getMockContent, BBCC_LINKS } from '../data/index.js'
 import EvidenciaForm from './EvidenciaForm.jsx'
 
@@ -140,44 +140,48 @@ function BrandSelector({ moduleId, selected, onSelect }) {
   )
 }
 
+// ─── Ícono por módulo ──────────────────────────────────────────────
+const MODULE_ICONS = { 'material-pop': Package, 'piezas-digitales': Monitor, 'evidencia-pop': Camera, qrs: QrCode, bbcc: FileText }
+
 // ─── Card individual ───────────────────────────────────────────────
 function ModuleCard({ mod, isOpen, onClick }) {
+  const Icon = MODULE_ICONS[mod.id] || Package
+
   return (
     <button
       onClick={onClick}
       aria-expanded={isOpen}
       className="relative flex flex-col items-center justify-center text-center w-full border transition-all duration-300 cursor-pointer rounded-[2px] group"
       style={{
-        minHeight: 200,
-        padding: '2rem 1.5rem',
-        background: isOpen ? '#0066B3' : 'rgba(255,255,255,0.03)',
-        borderColor: isOpen ? '#0066B3' : 'rgba(255,255,255,0.07)',
+        minHeight: 190,
+        padding: '1.75rem 1.25rem',
+        background: isOpen ? '#0066B3' : 'rgba(255,255,255,0.06)',
+        borderColor: isOpen ? '#0066B3' : 'rgba(255,255,255,0.12)',
         boxShadow: isOpen ? '0 0 40px rgba(0,102,179,0.25)' : 'none',
       }}
     >
-      {/* Hover state (solo cuando no está abierta) */}
+      {/* Hover state */}
       {!isOpen && (
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[2px]"
-          style={{ background: 'rgba(255,255,255,0.04)' }}
+          style={{ background: 'rgba(255,255,255,0.05)' }}
         />
       )}
 
-      {/* Número */}
-      <span
-        className="block font-condensed font-bold text-[0.65rem] tracking-[0.4em] uppercase mb-4 transition-colors duration-300"
-        style={{ color: isOpen ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.18)' }}
-      >
-        {mod.number}
-      </span>
+      {/* Ícono */}
+      <Icon
+        size={24}
+        className="mb-3 transition-colors duration-300"
+        style={{ color: isOpen ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.40)' }}
+      />
 
-      {/* Título centrado */}
+      {/* Título */}
       <h3
         className="font-condensed leading-tight transition-colors duration-300"
         style={{
-          fontSize: 'clamp(1.1rem, 1.8vw, 1.4rem)',
-          letterSpacing: '0.12em',
-          color: isOpen ? '#ffffff' : 'rgba(255,255,255,0.82)',
+          fontSize: 'clamp(1.15rem, 2vw, 1.4rem)',
+          letterSpacing: '0.10em',
+          color: isOpen ? '#ffffff' : 'rgba(255,255,255,0.92)',
           textShadow: isOpen ? '0 1px 12px rgba(0,0,0,0.3)' : 'none',
           fontWeight: 700,
         }}
@@ -191,18 +195,21 @@ function ModuleCard({ mod, isOpen, onClick }) {
 
       {/* Subtítulo */}
       <p
-        className="text-xs leading-relaxed mt-2 mb-5 transition-colors duration-300"
-        style={{ color: isOpen ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.25)' }}
+        className="leading-relaxed mt-2 mb-4 transition-colors duration-300"
+        style={{
+          fontSize: 'clamp(0.72rem, 1.1vw, 0.8rem)',
+          color: isOpen ? 'rgba(255,255,255,0.80)' : 'rgba(255,255,255,0.55)',
+        }}
       >
         {mod.subtitle}
       </p>
 
       {/* Chevron */}
       <ChevronDown
-        size={14}
+        size={15}
         className="transition-all duration-300"
         style={{
-          color: isOpen ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.22)',
+          color: isOpen ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.30)',
           transform: isOpen ? 'rotate(180deg)' : 'none',
         }}
       />
@@ -210,10 +217,7 @@ function ModuleCard({ mod, isOpen, onClick }) {
       {/* Línea inferior activa */}
       <div
         className="absolute bottom-0 left-0 right-0 h-[2px] transition-opacity duration-300"
-        style={{
-          background: 'rgba(255,255,255,0.4)',
-          opacity: isOpen ? 1 : 0,
-        }}
+        style={{ background: 'rgba(255,255,255,0.4)', opacity: isOpen ? 1 : 0 }}
       />
     </button>
   )
@@ -234,7 +238,7 @@ export default function ModuleCards({ openModule, setOpenModule, selectedBrands,
       <div className="max-w-[1360px] mx-auto px-6">
 
         {/* Grid de 5 cards — sin header, directo al grano */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
           {MODULES.map((mod) => (
             <ModuleCard
               key={mod.id}

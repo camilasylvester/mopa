@@ -6,13 +6,23 @@ export default function Hero() {
       id="inicio"
       className="relative min-h-screen flex flex-col overflow-hidden"
     >
-      {/* ── Imagen de fondo completa ── */}
+      {/* ── Imagen de fondo — desktop ── */}
       <div
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 hidden sm:block"
         style={{
           backgroundImage: "url('/fondo.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
+      {/* ── Imagen de fondo — mobile ── */}
+      <div
+        className="absolute inset-0 z-0 sm:hidden"
+        style={{
+          backgroundImage: "url('/fondo_mobile.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
           backgroundRepeat: 'no-repeat',
         }}
       />
