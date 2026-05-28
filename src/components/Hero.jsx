@@ -68,15 +68,15 @@ export default function Hero() {
         }}
       />
 
-      {/* ── Título: inferior izquierda ── */}
-      <div className="relative z-20 flex-1 flex flex-col justify-end max-w-[1360px] mx-auto w-full px-8 pb-14 pt-24">
+      {/* ── Título: arriba en mobile / abajo-izquierda en desktop ── */}
+      <div className="relative z-20 flex-1 flex flex-col justify-start pt-28 sm:justify-end sm:pt-24 sm:pb-14 max-w-[1360px] mx-auto w-full px-8">
         <h1 className="font-display leading-[0.88]">
           <span
             className="reveal-up block text-white"
             style={{
-              fontSize: 'clamp(4rem, 9vw, 8.5rem)',
+              fontSize: 'clamp(2.4rem, 9vw, 8.5rem)',
               animationDelay: '0.15s',
-              textShadow: '0 2px 24px rgba(0,0,0,0.8)',
+              textShadow: '0 2px 24px rgba(0,0,0,0.9)',
             }}
           >
             PROMO MUNDIALISTA
@@ -84,9 +84,9 @@ export default function Hero() {
           <span
             className="reveal-up flex items-baseline gap-x-4"
             style={{
-              fontSize: 'clamp(3.2rem, 7.5vw, 7rem)',
+              fontSize: 'clamp(2rem, 7.5vw, 7rem)',
               animationDelay: '0.35s',
-              textShadow: '0 2px 24px rgba(0,0,0,0.8)',
+              textShadow: '0 2px 24px rgba(0,0,0,0.9)',
             }}
           >
             {/* MOPAR siempre blanco — jamás azul */}
