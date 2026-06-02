@@ -4,7 +4,7 @@ export default function Hero() {
   return (
     <section
       id="inicio"
-      className="relative min-h-[58vh] sm:min-h-[74vh] flex flex-col overflow-hidden"
+      className="relative min-h-[55vh] sm:min-h-[68vh] flex flex-col overflow-hidden"
     >
       {/* ── Imagen de fondo — desktop ── */}
       <div
@@ -12,7 +12,7 @@ export default function Hero() {
         style={{
           backgroundImage: "url('/fondo.png')",
           backgroundSize: 'cover',
-          backgroundPosition: 'center center',
+          backgroundPosition: 'center 65%',
           backgroundRepeat: 'no-repeat',
         }}
       />
