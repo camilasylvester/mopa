@@ -4,7 +4,7 @@ export default function Hero() {
   return (
     <section
       id="inicio"
-      className="relative min-h-screen sm:min-h-[82vh] flex flex-col overflow-hidden"
+      className="relative min-h-[45vh] sm:min-h-[52vh] flex flex-col overflow-hidden"
     >
       {/* ── Imagen de fondo — desktop ── */}
       <div
@@ -20,9 +20,9 @@ export default function Hero() {
       <div
         className="absolute inset-0 z-0 sm:hidden"
         style={{
-          backgroundImage: "url('/fondo_mobile.jpg')",
+          backgroundImage: "url('/cancha.avif')",
           backgroundSize: 'cover',
-          backgroundPosition: 'center top',
+          backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
         }}
       />
@@ -69,7 +69,7 @@ export default function Hero() {
       />
 
       {/* ── Título: arriba en mobile / abajo-izquierda en desktop ── */}
-      <div className="relative z-20 flex-1 flex flex-col justify-start pt-20 sm:justify-end sm:pt-24 sm:pb-14 max-w-[1360px] mx-auto w-full px-8">
+      <div className="relative z-20 flex-1 flex flex-col justify-end pb-8 sm:pb-10 max-w-[1360px] mx-auto w-full px-8">
         <h1 className="font-display leading-[0.88]">
           <span
             className="reveal-up block text-white"
