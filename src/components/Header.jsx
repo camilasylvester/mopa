@@ -38,8 +38,8 @@ export default function Header({ onNavClick }) {
           <img
             src="/Logo_Mopar-NEGBlanco-02.png"
             alt="MOPAR®"
-            className="h-12 w-auto object-contain select-none"
-            style={{ maxWidth: 200 }}
+            className="h-16 w-auto object-contain select-none"
+            style={{ maxWidth: 260 }}
             draggable={false}
           />
         </a>
