@@ -4,7 +4,7 @@ export default function Hero() {
   return (
     <section
       id="inicio"
-      className="relative min-h-screen flex flex-col overflow-hidden"
+      className="relative min-h-screen sm:min-h-[82vh] flex flex-col overflow-hidden"
     >
       {/* ── Imagen de fondo — desktop ── */}
       <div
@@ -74,12 +74,12 @@ export default function Hero() {
           <span
             className="reveal-up block text-white"
             style={{
-              fontSize: 'clamp(3rem, 9vw, 8.5rem)',
+              fontSize: 'clamp(3rem, 8vw, 7.5rem)',
               animationDelay: '0.15s',
               textShadow: '0 2px 24px rgba(0,0,0,0.9)',
             }}
           >
-            PROMO MUNDIALISTA
+            CAMPAÑA
           </span>
           <span
             className="reveal-up flex items-baseline gap-x-4"

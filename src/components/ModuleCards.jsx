@@ -105,7 +105,7 @@ function BrandSelector({ moduleId, selected, onSelect }) {
             <button
               key={brand.id}
               onClick={() => onSelect(isSel ? null : brand.id)}
-              className="flex items-center px-5 py-2.5 border rounded-[2px] transition-all duration-200"
+              className="flex items-center gap-2.5 px-4 py-2.5 border rounded-[2px] transition-all duration-200"
               style={{
                 borderColor: isSel ? brand.colorAccent : 'rgba(255,255,255,0.10)',
                 background: isSel
@@ -125,9 +125,17 @@ function BrandSelector({ moduleId, selected, onSelect }) {
                 }
               }}
             >
+              {brand.logo && (
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  className="h-5 w-auto object-contain shrink-0"
+                  style={{ filter: 'brightness(0) invert(1)', opacity: isSel ? 1 : 0.55 }}
+                />
+              )}
               <span
                 className="text-[0.78rem] font-semibold transition-colors duration-200"
-                style={{ color: isSel ? '#ffffff' : 'rgba(255,255,255,0.50)' }}
+                style={{ color: isSel ? '#ffffff' : 'rgba(255,255,255,0.55)' }}
               >
                 {brand.name}
               </span>
