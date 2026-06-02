@@ -8,15 +8,15 @@ export default function Footer() {
 
           {/* Logo oficial */}
           <img
-            src="/logo-mopar.png"
+            src="/Logo_Mopar-NEGBlanco-02.png"
             alt="MOPAR®"
-            className="h-7 w-auto object-contain opacity-60"
+            className="h-14 w-auto object-contain opacity-80"
             draggable={false}
           />
 
           {/* Legal note */}
           <p className="text-white/20 text-[0.68rem] text-center">
-            Promo Mundialista MOPAR {year} — Uso interno. Todos los derechos reservados.
+            Campaña Lubricantes MOPAR {year} — Uso interno. Todos los derechos reservados.
           </p>
 
           {/* Version / metadata — replace with build info */}
