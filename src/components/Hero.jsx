@@ -4,7 +4,7 @@ export default function Hero() {
   return (
     <section
       id="inicio"
-      className="relative min-h-[45vh] sm:min-h-[52vh] flex flex-col overflow-hidden"
+      className="relative min-h-[58vh] sm:min-h-[74vh] flex flex-col overflow-hidden"
     >
       {/* ── Imagen de fondo — desktop ── */}
       <div
@@ -74,12 +74,12 @@ export default function Hero() {
           <span
             className="reveal-up block text-white"
             style={{
-              fontSize: 'clamp(3rem, 8vw, 7.5rem)',
-              animationDelay: '0.15s',
+              fontSize: 'clamp(2.2rem, 6.5vw, 6rem)',
+              animationDelay: '0.05s',
               textShadow: '0 2px 24px rgba(0,0,0,0.9)',
             }}
           >
-            CAMPAÑA
+            CAMPAÑA LUBRICANTES
           </span>
           <span
             className="reveal-up flex items-baseline gap-x-4"
