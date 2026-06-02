@@ -125,14 +125,6 @@ function BrandSelector({ moduleId, selected, onSelect }) {
                 }
               }}
             >
-              {brand.logo && (
-                <img
-                  src={brand.logo}
-                  alt={brand.name}
-                  className="h-5 w-auto object-contain shrink-0"
-                  style={{ filter: 'brightness(0) invert(1)', opacity: isSel ? 1 : 0.55 }}
-                />
-              )}
               <span
                 className="text-[0.78rem] font-semibold transition-colors duration-200"
                 style={{ color: isSel ? '#ffffff' : 'rgba(255,255,255,0.55)' }}
