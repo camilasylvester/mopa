@@ -36,10 +36,10 @@ export default function Header({ onNavClick }) {
         {/* ── Logo oficial Mopar ── */}
         <a href="#inicio" className="flex items-center shrink-0">
           <img
-            src="/logo-mopar.png"
+            src="/Logo_Mopar-NEGBlanco-02.png"
             alt="MOPAR®"
-            className="h-10 w-auto object-contain select-none"
-            style={{ maxWidth: 160 }}
+            className="h-12 w-auto object-contain select-none"
+            style={{ maxWidth: 200 }}
             draggable={false}
           />
         </a>
