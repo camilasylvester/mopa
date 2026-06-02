@@ -1,68 +1,129 @@
-import { useState } from 'react'
-import { Upload, CheckCircle, AlertCircle, Loader, FolderOpen } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { Upload, CheckCircle, AlertCircle, Loader, FolderOpen, ChevronDown } from 'lucide-react'
 import { APPS_SCRIPT_URL } from '../data/index.js'
 import { DEALERS } from '../data/dealers.js'
 
-// Jeep y RAM aparecen juntos como una sola opción en el formulario
 const FORM_BRANDS = ['Jeep / RAM', 'Fiat', 'Peugeot', 'Citroën']
 
-// Mapea la opción del form al key del DEALERS
 function dealerKey(marca) {
   return marca === 'Jeep / RAM' ? 'Jeep' : marca
 }
 
-// ─── Input / Select base styles ───────────────────────────────────
-const inputCls =
-  'w-full bg-white/[0.05] border border-white/[0.10] rounded-[2px] px-3 py-2.5 ' +
-  'text-sm text-white/70 placeholder:text-white/20 ' +
-  'focus:outline-none focus:border-mopar-blue/60 focus:bg-white/[0.07] ' +
-  'transition-all duration-150 appearance-none'
+// ─── Dropdown custom (reemplaza <select> nativo) ──────────────────
+function CustomSelect({ label, value, options, placeholder, onChange, disabled }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  // Cerrar al hacer click afuera
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const selected = value || null
+
+  return (
+    <div className="flex flex-col gap-1.5" ref={ref}>
+      <label className="text-white/30 text-[0.63rem] uppercase tracking-label font-semibold">
+        {label}
+      </label>
+      <div className="relative">
+        {/* Trigger */}
+        <button
+          type="button"
+          onClick={() => !disabled && setOpen(v => !v)}
+          className="w-full flex items-center justify-between px-3 py-2.5 rounded-[2px] border text-sm text-left transition-all duration-150"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            borderColor: open ? 'rgba(0,102,179,0.6)' : 'rgba(255,255,255,0.10)',
+            color: selected ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.30)',
+            opacity: disabled ? 0.4 : 1,
+            cursor: disabled ? 'not-allowed' : 'pointer',
+          }}
+        >
+          <span className="truncate">{selected || placeholder}</span>
+          <ChevronDown
+            size={14}
+            className="shrink-0 ml-2 transition-transform duration-200"
+            style={{
+              color: 'rgba(255,255,255,0.35)',
+              transform: open ? 'rotate(180deg)' : 'none',
+            }}
+          />
+        </button>
+
+        {/* Lista */}
+        {open && !disabled && (
+          <div
+            className="absolute left-0 right-0 z-50 mt-1 rounded-[2px] border overflow-y-auto"
+            style={{
+              background: '#141420',
+              borderColor: 'rgba(0,102,179,0.4)',
+              maxHeight: 220,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
+              animation: 'slideDown 0.15s cubic-bezier(0.22,1,0.36,1) forwards',
+            }}
+          >
+            {options.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => { onChange(opt); setOpen(false) }}
+                className="w-full text-left px-3 py-2.5 text-sm transition-colors duration-100"
+                style={{
+                  color: opt === value ? '#ffffff' : 'rgba(255,255,255,0.70)',
+                  background: opt === value ? 'rgba(0,102,179,0.35)' : 'transparent',
+                }}
+                onMouseEnter={e => { if (opt !== value) e.currentTarget.style.background = 'rgba(255,255,255,0.07)' }}
+                onMouseLeave={e => { if (opt !== value) e.currentTarget.style.background = 'transparent' }}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
 
 export default function EvidenciaForm() {
-  const [form, setForm]       = useState({ marca: '', provincia: '', concesionaria: '' })
-  const [status, setStatus]   = useState('idle')   // idle | sending | success | error
+  const [form, setForm]         = useState({ marca: '', provincia: '', concesionaria: '' })
+  const [status, setStatus]     = useState('idle')
   const [folderUrl, setFolderUrl] = useState(null)
   const [errorMsg, setErrorMsg]   = useState('')
 
-  // ─── Opciones dinámicas ────────────────────────────────────────
   const key            = dealerKey(form.marca)
   const provincias     = form.marca     ? Object.keys(DEALERS[key] || {}).sort() : []
-  const concesionarias = form.provincia ? (DEALERS[key]?.[form.provincia] || [])  : []
+  const concesionarias = form.provincia ? (DEALERS[key]?.[form.provincia] || []) : []
 
   const setField = (k, v) => {
-    if (k === 'marca')    return setForm(p => ({ ...p, marca: v,    provincia: '', concesionaria: '' }))
+    if (k === 'marca')     return setForm(p => ({ ...p, marca: v,    provincia: '', concesionaria: '' }))
     if (k === 'provincia') return setForm(p => ({ ...p, provincia: v, concesionaria: '' }))
     setForm(p => ({ ...p, [k]: v }))
   }
 
   const isValid = form.marca && form.provincia && form.concesionaria
 
-  // ─── Submit ────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!isValid || status === 'sending') return
     setStatus('sending')
     setErrorMsg('')
-
     try {
       const params = new URLSearchParams(form)
-      const res = await fetch(`${APPS_SCRIPT_URL}?${params.toString()}`, {
-        redirect: 'follow',
-      })
+      const res  = await fetch(`${APPS_SCRIPT_URL}?${params.toString()}`, { redirect: 'follow' })
       const json = await res.json()
-      if (json.ok) {
-        setFolderUrl(json.folderUrl)
-        setStatus('success')
-      } else {
-        throw new Error(json.error || 'Error al crear la carpeta.')
-      }
+      if (json.ok) { setFolderUrl(json.folderUrl); setStatus('success') }
+      else throw new Error(json.error || 'Error al crear la carpeta.')
     } catch (err) {
       setStatus('error')
       setErrorMsg(err.message || 'No se pudo conectar. Verificá tu conexión e intentá de nuevo.')
     }
   }
 
-  // ─── Pantalla de éxito ─────────────────────────────────────────
+  // ─── Éxito ────────────────────────────────────────────────────────
   if (status === 'success') {
     return (
       <div
@@ -78,7 +139,6 @@ export default function EvidenciaForm() {
             Hacé click abajo para subir tus fotos y videos directamente ahí, sin límite de tamaño.
           </p>
         </div>
-
         {folderUrl && (
           <a
             href={folderUrl}
@@ -91,13 +151,8 @@ export default function EvidenciaForm() {
             Subir fotos / videos a Drive
           </a>
         )}
-
         <button
-          onClick={() => {
-            setStatus('idle')
-            setFolderUrl(null)
-            setForm({ marca: '', provincia: '', concesionaria: '' })
-          }}
+          onClick={() => { setStatus('idle'); setFolderUrl(null); setForm({ marca: '', provincia: '', concesionaria: '' }) }}
           className="text-white/30 hover:text-white/60 text-xs transition-colors underline underline-offset-2"
         >
           Registrar otra concesionaria
@@ -106,83 +161,40 @@ export default function EvidenciaForm() {
     )
   }
 
-  // ─── Form ──────────────────────────────────────────────────────
+  // ─── Form ─────────────────────────────────────────────────────────
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ animation: 'slideDown 0.3s cubic-bezier(0.22,1,0.36,1) forwards' }}
-    >
+    <form onSubmit={handleSubmit} style={{ animation: 'slideDown 0.3s cubic-bezier(0.22,1,0.36,1) forwards' }}>
       <p className="text-white/30 text-xs mb-4 leading-relaxed max-w-xl">
         Completá los datos de tu concesionario y subí la evidencia a la carpeta Drive correspondiente.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
-
-        {/* Marca */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-white/30 text-[0.63rem] uppercase tracking-label font-semibold">
-            Marca
-          </label>
-          <select
-            value={form.marca}
-            onChange={e => setField('marca', e.target.value)}
-            required
-            className={inputCls}
-            style={{ colorScheme: 'dark' }}
-          >
-            <option value="" disabled>Seleccioná</option>
-            {FORM_BRANDS.map(b => (
-              <option key={b} value={b}>{b}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Provincia */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-white/30 text-[0.63rem] uppercase tracking-label font-semibold">
-            Provincia
-          </label>
-          <select
-            value={form.provincia}
-            onChange={e => setField('provincia', e.target.value)}
-            required
-            disabled={!form.marca}
-            className={inputCls}
-            style={{ colorScheme: 'dark', opacity: form.marca ? 1 : 0.4 }}
-          >
-            <option value="" disabled>
-              {form.marca ? 'Seleccioná' : 'Elegí una marca primero'}
-            </option>
-            {provincias.map(p => (
-              <option key={p} value={p}>{p}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Concesionaria */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-white/30 text-[0.63rem] uppercase tracking-label font-semibold">
-            Concesionaria
-          </label>
-          <select
-            value={form.concesionaria}
-            onChange={e => setField('concesionaria', e.target.value)}
-            required
-            disabled={!form.provincia}
-            className={inputCls}
-            style={{ colorScheme: 'dark', opacity: form.provincia ? 1 : 0.4 }}
-          >
-            <option value="" disabled>
-              {form.provincia ? 'Seleccioná' : 'Elegí una provincia primero'}
-            </option>
-            {concesionarias.map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-        </div>
+        <CustomSelect
+          label="Marca"
+          value={form.marca}
+          options={FORM_BRANDS}
+          placeholder="Seleccioná"
+          onChange={v => setField('marca', v)}
+          disabled={false}
+        />
+        <CustomSelect
+          label="Provincia"
+          value={form.provincia}
+          options={provincias}
+          placeholder={form.marca ? 'Seleccioná' : 'Elegí una marca primero'}
+          onChange={v => setField('provincia', v)}
+          disabled={!form.marca}
+        />
+        <CustomSelect
+          label="Concesionaria"
+          value={form.concesionaria}
+          options={concesionarias}
+          placeholder={form.provincia ? 'Seleccioná' : 'Elegí una provincia primero'}
+          onChange={v => setField('concesionaria', v)}
+          disabled={!form.provincia}
+        />
       </div>
 
-      {/* Error */}
       {errorMsg && (
         <div className="flex items-center gap-2 text-red-400/75 text-xs mb-4">
           <AlertCircle size={13} className="shrink-0" />
@@ -190,19 +202,14 @@ export default function EvidenciaForm() {
         </div>
       )}
 
-      {/* Submit */}
       <button
         type="submit"
         disabled={!isValid || !APPS_SCRIPT_URL || status === 'sending'}
         className="flex items-center gap-2.5 px-6 py-2.5 rounded-[2px] text-sm font-semibold transition-all duration-200"
         style={{
-          background: isValid && APPS_SCRIPT_URL && status !== 'sending'
-            ? '#0066B3'
-            : 'rgba(255,255,255,0.05)',
-          color: isValid && APPS_SCRIPT_URL && status !== 'sending'
-            ? '#ffffff'
-            : 'rgba(255,255,255,0.22)',
-          cursor: isValid && APPS_SCRIPT_URL && status !== 'sending' ? 'pointer' : 'not-allowed',
+          background: isValid && APPS_SCRIPT_URL && status !== 'sending' ? '#0066B3' : 'rgba(255,255,255,0.05)',
+          color:      isValid && APPS_SCRIPT_URL && status !== 'sending' ? '#ffffff' : 'rgba(255,255,255,0.22)',
+          cursor:     isValid && APPS_SCRIPT_URL && status !== 'sending' ? 'pointer' : 'not-allowed',
         }}
       >
         {status === 'sending' ? (
