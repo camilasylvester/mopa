@@ -20,7 +20,7 @@ export default function Hero() {
       <div
         className="absolute inset-0 z-0 sm:hidden"
         style={{
-          backgroundImage: "url('/cancha.avif')",
+          backgroundImage: "url('/fondo_mobile.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
