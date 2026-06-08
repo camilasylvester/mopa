@@ -6,7 +6,9 @@ import Footer from './components/Footer.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 
 export default function App() {
-  if (window.location.pathname.startsWith('/dashboard')) return <Dashboard />
+  const path = window.location.pathname
+  const hash = window.location.hash
+  if (path.startsWith('/dashboard') || hash === '#dashboard') return <Dashboard />
 
   // Lifted state: which module card is open + selected brands per module
   const [openModule, setOpenModule]       = useState(null)
