@@ -218,10 +218,36 @@ export default function Dashboard() {
         )}
 
         {/* ── Stats ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-          <StatCard label="Total registros" value={filtered.length} icon={Users} accent="#0066B3" />
-          <StatCard label="Con 2 chances"   value={filtered.filter(r => String(r.chances) === '2').length} icon={Users} accent="#4ade80" />
-          <StatCard label="Con 1 chance"    value={filtered.filter(r => String(r.chances) === '1').length} icon={Users} accent="#60a5fa" />
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+          {MARCA_TABS.map(t => {
+            const count = t.marcas
+              ? data.filter(r => t.marcas.includes(r.marca?.toLowerCase())).length
+              : data.length
+            const isActive = tab === t.id
+            return (
+              <button
+                key={t.id}
+                onClick={() => { setTab(t.id); setPage(0) }}
+                className="rounded-[2px] border px-5 py-4 flex flex-col gap-2 text-left transition-all duration-200"
+                style={{
+                  borderColor: isActive ? '#0066B3' : 'rgba(255,255,255,0.08)',
+                  background:  isActive ? 'rgba(0,102,179,0.12)' : 'rgba(255,255,255,0.03)',
+                  boxShadow:   isActive ? '0 0 20px rgba(0,102,179,0.15)' : 'none',
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <Users size={13} style={{ color: isActive ? '#0066B3' : 'rgba(255,255,255,0.25)' }} />
+                  <span className="text-[0.62rem] uppercase tracking-widest font-semibold"
+                    style={{ color: isActive ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.30)' }}>
+                    {t.label}
+                  </span>
+                </div>
+                <span className="font-display text-white" style={{ fontSize: 'clamp(2rem, 3vw, 2.8rem)' }}>
+                  {count.toLocaleString('es-AR')}
+                </span>
+              </button>
+            )
+          })}
         </div>
 
         {/* ── Top lists ── */}
@@ -233,20 +259,7 @@ export default function Dashboard() {
         {/* ── Tabs + Descargas ── */}
         <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
 
-          {/* Filtros por marca */}
-          <div className="flex gap-2 flex-wrap">
-            {MARCA_TABS.map(t => (
-              <button key={t.id} onClick={() => { setTab(t.id); setPage(0) }}
-                className="px-4 py-2 rounded-[2px] text-xs font-semibold transition-all duration-150"
-                style={{
-                  background:   tab === t.id ? '#0066B3' : 'rgba(255,255,255,0.05)',
-                  color:        tab === t.id ? '#fff'    : 'rgba(255,255,255,0.45)',
-                  border:       `1px solid ${tab === t.id ? '#0066B3' : 'rgba(255,255,255,0.08)'}`,
-                }}>
-                {t.label}
-              </button>
-            ))}
-          </div>
+          <div />
 
           {/* Descargar CSV */}
           <div className="flex flex-wrap gap-2">
