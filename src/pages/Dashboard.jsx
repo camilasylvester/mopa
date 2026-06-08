@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Download, LogOut, Users, Gift, TrendingUp, Car, MapPin, RefreshCw, AlertCircle } from 'lucide-react'
+import { Download, LogOut, Users, TrendingUp, MapPin, RefreshCw, AlertCircle } from 'lucide-react'
 import { supabase, TABLE } from '../lib/supabase.js'
 
 const PASSWORD  = 'promomopar'
@@ -198,10 +198,8 @@ export default function Dashboard() {
   const filtered = useMemo(() => filterByMarca(data, tab), [data, tab])
 
   // ── Métricas del brief ────────────────────────────────────────
-  const participantes    = filtered.length
-  const serviciosUnicos  = useMemo(() => new Set(filtered.map(r => r.patente).filter(Boolean)).size, [filtered])
-  const premiosEntregados= useMemo(() => filtered.filter(r => r.resultado?.toLowerCase() === 'gol').length, [filtered])
-  const conversion       = useMemo(() => {
+  const participantes = filtered.length
+  const conversion    = useMemo(() => {
     const jugaron = filtered.filter(r => r.resultado?.toLowerCase() !== 'pendiente').length
     return participantes > 0 ? Math.round((jugaron / participantes) * 100) : 0
   }, [filtered, participantes])
@@ -265,11 +263,9 @@ export default function Dashboard() {
         {/* ── 1. Métricas principales ── */}
         <div>
           <p className="text-white/20 text-[0.6rem] uppercase tracking-widest font-semibold mb-3">Métricas de performance</p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <MetricCard label="Participantes"           value={fmt(participantes)}     icon={Users}      accent="#0066B3" />
-            <MetricCard label="Servicios registrados"   value={fmt(serviciosUnicos)}   icon={Car}        accent="#a78bfa" sub="Patentes únicas" />
-            <MetricCard label="Premios entregados"      value={fmt(premiosEntregados)} icon={Gift}       accent="#4ade80" sub="Instantáneos (gol)" />
-            <MetricCard label="Conversión"              value={`${conversion}%`}       icon={TrendingUp} accent="#fb923c" sub="Participaron del juego" />
+          <div className="grid grid-cols-2 gap-3 max-w-lg">
+            <MetricCard label="Participantes" value={fmt(participantes)} icon={Users}      accent="#0066B3" />
+            <MetricCard label="Conversión"    value={`${conversion}%`}  icon={TrendingUp} accent="#fb923c" sub="Jugaron del total" />
           </div>
         </div>
 
