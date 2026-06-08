@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Download, LogOut, Users, Trophy, Shield, Clock, RefreshCw, AlertCircle } from 'lucide-react'
+import { Download, LogOut, Users, RefreshCw, AlertCircle } from 'lucide-react'
 import { supabase, TABLE } from '../lib/supabase.js'
 
 const PASSWORD  = 'promomopar'
@@ -159,9 +159,6 @@ export default function Dashboard() {
 
   const filtered = useMemo(() => filterByMarca(data, tab), [data, tab])
 
-  const goles      = useMemo(() => filtered.filter(r => r.resultado?.toLowerCase() === 'gol').length,      [filtered])
-  const atajadas   = useMemo(() => filtered.filter(r => r.resultado?.toLowerCase() === 'atajada').length,  [filtered])
-  const pendientes = useMemo(() => filtered.filter(r => r.resultado?.toLowerCase() === 'pendiente').length,[filtered])
 
   const topProvincias = useMemo(() => {
     const c = {}
@@ -221,11 +218,10 @@ export default function Dashboard() {
         )}
 
         {/* ── Stats ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          <StatCard label="Total registros" value={filtered.length} icon={Users}   accent="#0066B3" />
-          <StatCard label="Goles"            value={goles}          icon={Trophy}  accent="#4ade80" />
-          <StatCard label="Atajadas"         value={atajadas}       icon={Shield}  accent="#60a5fa" />
-          <StatCard label="Pendientes"       value={pendientes}     icon={Clock}   accent="#facc15" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+          <StatCard label="Total registros" value={filtered.length} icon={Users} accent="#0066B3" />
+          <StatCard label="Con 2 chances"   value={filtered.filter(r => String(r.chances) === '2').length} icon={Users} accent="#4ade80" />
+          <StatCard label="Con 1 chance"    value={filtered.filter(r => String(r.chances) === '1').length} icon={Users} accent="#60a5fa" />
         </div>
 
         {/* ── Top lists ── */}
