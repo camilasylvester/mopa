@@ -158,22 +158,54 @@ function MetricCard({ label, value, sub, icon: Icon, accent = '#0066B3' }) {
   )
 }
 
+// Logos por tab
+const TAB_LOGOS = {
+  all:     ['/Logo_Mopar-NEGBlanco-02.png'],
+  jeepram: ['/logos/jeep.png', '/logos/ram.png'],
+  peugeot: [],
+  citroen: ['/logos/citroen.png'],
+  fiat:    ['/logos/fiat.png'],
+}
+
 // ─── Marca Card (clickeable) ───────────────────────────────────
-function MarcaCard({ tab, count, isActive, onClick }) {
+function MarcaCard({ tab, count, conv, isActive, onClick }) {
+  const logos = TAB_LOGOS[tab.id] || []
   return (
     <button onClick={onClick}
-      className="rounded-[2px] px-4 py-4 flex flex-col gap-2 text-left transition-all duration-200"
+      className="rounded-[2px] px-4 py-4 flex flex-col gap-2 text-left transition-all duration-300 w-full"
       style={{
-        background:  isActive ? 'rgba(0,102,179,0.15)' : 'rgba(255,255,255,0.04)',
-        border:      `1px solid ${isActive ? 'rgba(0,102,179,0.6)' : 'rgba(255,255,255,0.08)'}`,
-        boxShadow:   isActive ? '0 0 25px rgba(0,102,179,0.2)' : 'none',
+        background:     isActive ? 'rgba(0,102,179,0.12)' : 'rgba(255,255,255,0.04)',
+        border:         `1px solid ${isActive ? 'rgba(0,102,179,0.55)' : 'rgba(255,255,255,0.08)'}`,
+        boxShadow:      isActive ? '0 0 30px rgba(0,102,179,0.18)' : 'none',
         backdropFilter: 'blur(10px)',
       }}>
-      <span className="font-condensed text-[0.68rem] uppercase tracking-[0.18em] font-semibold"
-        style={{ color: isActive ? '#0066B3' : 'rgba(255,255,255,0.30)' }}>
-        {tab.label}
+
+      {/* Logos */}
+      <div className="flex items-center gap-2 h-6">
+        {logos.length > 0 ? logos.map((src, i) => (
+          <img key={i} src={src} alt="" className="h-5 w-auto object-contain"
+            style={{ filter: 'brightness(0) invert(1)', opacity: isActive ? 0.9 : 0.3 }} />
+        )) : (
+          <span className="font-condensed text-[0.6rem] uppercase tracking-widest"
+            style={{ color: isActive ? 'rgba(0,102,179,0.9)' : 'rgba(255,255,255,0.25)' }}>
+            {tab.label}
+          </span>
+        )}
+      </div>
+
+      {/* Participantes */}
+      <span className="font-display text-white" style={{ fontSize: 'clamp(1.6rem, 2vw, 2.2rem)' }}>
+        {fmt(count)}
+        <span className="text-white/30 text-sm font-sans ml-1.5">participantes</span>
       </span>
-      <span className="font-display text-white" style={{ fontSize: 'clamp(1.6rem, 2vw, 2.2rem)', textShadow: isActive ? '0 0 30px rgba(0,102,179,0.5)' : 'none' }}>{fmt(count)}</span>
+
+      {/* Conversión — solo cuando está activa */}
+      {isActive && conv && (
+        <div className="border-t border-white/[0.08] pt-2 mt-0.5 flex items-center justify-between">
+          <span className="text-white/40 text-xs">{conv.active} de {conv.total} concesionarios</span>
+          <span className="font-display text-[#0066B3] text-xl">{conv.pct}%</span>
+        </div>
+      )}
     </button>
   )
 }
@@ -365,36 +397,25 @@ export default function Dashboard() {
           </div>
 
           {/* Conversión por marca */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-3">
-            {[
-              { label: 'Jeep y RAM', conv: convJeepRam },
-              { label: 'Peugeot',    conv: convPeugeot },
-              { label: 'Citroën',    conv: convCitroen },
-              { label: 'Fiat',       conv: convFiat },
-            ].map(({ label, conv }) => (
-              <div key={label} className="rounded-[2px] px-4 py-3 flex flex-col gap-1"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', backdropFilter: 'blur(10px)' }}>
-                <span className="font-condensed text-[0.62rem] uppercase tracking-widest text-white/30">{label}</span>
-                <span className="font-display text-white text-2xl">{conv.pct}%</span>
-                <span className="text-white/30 text-[0.62rem]">{conv.active} de {conv.total} concesionarios</span>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* ── 2. Distribución por marca (clickeable = filtro) ── */}
         <div>
           <div className="flex items-center gap-3 mb-4"><span className="w-5 h-px bg-mopar-blue" /><p className="font-condensed text-white/40 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Por marca — hacé click para filtrar</p></div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {MARCA_TABS.map(t => (
-              <MarcaCard
-                key={t.id}
-                tab={t}
-                count={t.marcas ? data.filter(r => t.marcas.includes(r.marca?.toLowerCase())).length : data.length}
-                isActive={tab === t.id}
-                onClick={() => { setTab(t.id); setPage(0) }}
-              />
-            ))}
+            {MARCA_TABS.map(t => {
+              const convMap = { all: convGeneral, jeepram: convJeepRam, peugeot: convPeugeot, citroen: convCitroen, fiat: convFiat }
+              return (
+                <MarcaCard
+                  key={t.id}
+                  tab={t}
+                  count={t.marcas ? data.filter(r => t.marcas.includes(r.marca?.toLowerCase())).length : data.length}
+                  conv={convMap[t.id]}
+                  isActive={tab === t.id}
+                  onClick={() => { setTab(t.id); setPage(0) }}
+                />
+              )
+            })}
           </div>
         </div>
 
