@@ -179,37 +179,30 @@ function MarcaCard({ tab, count, conv, isActive, onClick }) {
   const colors = TAB_COLORS[tab.id] || TAB_COLORS.all
   return (
     <button onClick={onClick}
-      className="rounded-xl px-4 py-4 flex flex-col gap-2 text-left transition-all duration-200 w-full"
+      className="rounded-xl px-4 py-5 flex flex-col items-center gap-2 text-center transition-all duration-200 w-full"
       style={{
         background: isActive ? colors.accent : 'white',
         border:     `1px solid ${isActive ? colors.accent : '#E5E7EB'}`,
         boxShadow:  isActive ? `0 4px 20px ${colors.glow}` : '0 2px 8px rgba(0,0,0,0.06)',
       }}>
 
-      {/* Logos */}
-      <div className="flex items-center gap-3 min-h-[2.5rem]">
-        {logos.length > 0 ? logos.map((src, i) => (
-          <img key={i} src={src} alt="" className="h-8 w-auto object-contain"
-            style={{ filter: isActive ? 'brightness(0) invert(1)' : 'none', opacity: isActive ? 1 : 0.7 }} />
-        )) : (
-          <span className="font-condensed font-bold uppercase tracking-widest"
-            style={{ fontSize: '1.1rem', color: isActive ? '#ffffff' : '#374151' }}>
-            {tab.label}
-          </span>
-        )}
-      </div>
+      {/* Nombre centrado */}
+      <span className="font-condensed font-bold uppercase tracking-widest text-center w-full block"
+        style={{ fontSize: '1rem', color: isActive ? 'rgba(255,255,255,0.85)' : colors.accent }}>
+        {tab.label}
+      </span>
 
       {/* Participantes */}
-      <span className="font-display" style={{ fontSize: 'clamp(1.8rem, 2.5vw, 2.4rem)', color: isActive ? '#ffffff' : '#0F1117' }}>
+      <span className="font-display text-center w-full block" style={{ fontSize: 'clamp(1.8rem, 2.5vw, 2.4rem)', color: isActive ? '#ffffff' : '#0F1117' }}>
         {fmt(count)}
         <span className="text-sm font-sans ml-1.5" style={{ color: isActive ? 'rgba(255,255,255,0.6)' : '#9CA3AF' }}>participantes</span>
       </span>
 
       {/* Conversión — solo cuando está activa */}
       {isActive && conv && (
-        <div className="border-t border-white/20 pt-2 mt-0.5 flex items-center justify-between">
-          <span className="text-white/70 text-xs">{conv.active} de {conv.total} concesionarios</span>
-          <span className="font-display text-white text-xl">{conv.pct}%</span>
+        <div className="border-t border-white/20 pt-2 mt-0.5 w-full text-center">
+          <span className="font-display text-white text-2xl">{conv.pct}%</span>
+          <p className="text-white/70 text-xs mt-0.5">{conv.active} de {conv.total} concesionarios</p>
         </div>
       )}
     </button>
