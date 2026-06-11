@@ -438,8 +438,8 @@ export default function Dashboard() {
             <p className="font-condensed text-white/40 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Descargar concesionarios por marca</p>
           </div>
 
-          {/* Card general */}
-          <div className="rounded-[2px] border border-white/[0.10] px-6 py-5 mb-3 flex flex-wrap items-center justify-between gap-4"
+          {/* Card general — solo cuando están "Todas" */}
+          {tab === 'all' && <div className="rounded-[2px] border border-white/[0.10] px-6 py-5 mb-3 flex flex-wrap items-center justify-between gap-4"
             style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(10px)' }}>
             <div>
               <p className="font-condensed text-white text-lg uppercase tracking-wide mb-1">Todas las marcas</p>
@@ -457,16 +457,16 @@ export default function Dashboard() {
               style={{ background: '#0066B3' }}>
               <Download size={15} /> Descargar CSV — Todas
             </button>
-          </div>
+          </div>}
 
-          {/* Cards por marca */}
+          {/* Cards por marca — filtra según tab activo */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
               { tabId: 'jeepram', label: 'Jeep y RAM', conv: convJeepRam, logos: ['/logos/jeep.png', '/logos/ram.png'] },
               { tabId: 'peugeot', label: 'Peugeot',    conv: convPeugeot, logos: [] },
               { tabId: 'citroen', label: 'Citroën',    conv: convCitroen, logos: ['/logos/citroen.png'] },
               { tabId: 'fiat',    label: 'Fiat',       conv: convFiat,    logos: ['/logos/fiat.png'] },
-            ].map(({ tabId, label, conv, logos }) => (
+            ].filter(({ tabId }) => tab === 'all' || tab === tabId).map(({ tabId, label, conv, logos }) => (
               <div key={tabId} className="rounded-[2px] border border-white/[0.08] px-5 py-5 flex flex-col gap-4"
                 style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(10px)' }}>
 
