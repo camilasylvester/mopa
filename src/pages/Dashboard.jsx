@@ -167,16 +167,26 @@ const TAB_LOGOS = {
   fiat:    ['/logos/fiat.png'],
 }
 
+// Colores por marca
+const TAB_COLORS = {
+  all:     { bg: 'rgba(0,102,179,0.12)',   border: 'rgba(0,102,179,0.55)',   accent: '#0066B3', glow: 'rgba(0,102,179,0.25)',   grad: 'rgba(0,102,179,0.15)' },
+  jeepram: { bg: 'rgba(74,144,48,0.12)',   border: 'rgba(74,144,48,0.55)',   accent: '#4A9030', glow: 'rgba(74,144,48,0.25)',   grad: 'rgba(74,144,48,0.15)' },
+  peugeot: { bg: 'rgba(42,108,189,0.12)',  border: 'rgba(42,108,189,0.55)',  accent: '#2A6CBD', glow: 'rgba(42,108,189,0.25)',  grad: 'rgba(42,108,189,0.15)' },
+  citroen: { bg: 'rgba(34,68,168,0.12)',   border: 'rgba(34,68,168,0.55)',   accent: '#2244A8', glow: 'rgba(34,68,168,0.25)',   grad: 'rgba(34,68,168,0.15)' },
+  fiat:    { bg: 'rgba(204,34,34,0.12)',   border: 'rgba(204,34,34,0.55)',   accent: '#CC2222', glow: 'rgba(204,34,34,0.25)',   grad: 'rgba(204,34,34,0.15)' },
+}
+
 // ─── Marca Card (clickeable) ───────────────────────────────────
 function MarcaCard({ tab, count, conv, isActive, onClick }) {
-  const logos = TAB_LOGOS[tab.id] || []
+  const logos  = TAB_LOGOS[tab.id] || []
+  const colors = TAB_COLORS[tab.id] || TAB_COLORS.all
   return (
     <button onClick={onClick}
       className="rounded-[2px] px-4 py-4 flex flex-col gap-2 text-left transition-all duration-300 w-full"
       style={{
-        background:     isActive ? 'rgba(0,102,179,0.12)' : 'rgba(255,255,255,0.04)',
-        border:         `1px solid ${isActive ? 'rgba(0,102,179,0.55)' : 'rgba(255,255,255,0.08)'}`,
-        boxShadow:      isActive ? '0 0 30px rgba(0,102,179,0.18)' : 'none',
+        background:     isActive ? colors.bg : 'rgba(255,255,255,0.04)',
+        border:         `1px solid ${isActive ? colors.border : 'rgba(255,255,255,0.08)'}`,
+        boxShadow:      isActive ? `0 0 30px ${colors.glow}` : 'none',
         backdropFilter: 'blur(10px)',
       }}>
 
@@ -203,7 +213,7 @@ function MarcaCard({ tab, count, conv, isActive, onClick }) {
       {isActive && conv && (
         <div className="border-t border-white/[0.08] pt-2 mt-0.5 flex items-center justify-between">
           <span className="text-white/40 text-xs">{conv.active} de {conv.total} concesionarios</span>
-          <span className="font-display text-[#0066B3] text-xl">{conv.pct}%</span>
+          <span className="font-display text-xl" style={{ color: colors.accent }}>{conv.pct}%</span>
         </div>
       )}
     </button>
@@ -454,45 +464,51 @@ export default function Dashboard() {
               { tabId: 'peugeot', label: 'Peugeot',    conv: convPeugeot, logos: [] },
               { tabId: 'citroen', label: 'Citroën',    conv: convCitroen, logos: ['/logos/citroen.png'] },
               { tabId: 'fiat',    label: 'Fiat',       conv: convFiat,    logos: ['/logos/fiat.png'] },
-            ].filter(({ tabId }) => tab === 'all' || tab === tabId).map(({ tabId, label, conv, logos }) => (
-              <div key={tabId} className="rounded-[2px] border border-white/[0.14] px-5 py-5 flex flex-col gap-4 w-full"
-                style={{ maxWidth: tab === 'all' ? 'none' : 420, background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(10px)' }}>
+            ].filter(({ tabId }) => tab === 'all' || tab === tabId).map(({ tabId, label, conv, logos }) => {
+              const c = TAB_COLORS[tabId] || TAB_COLORS.all
+              return (
+              <div key={tabId} className="rounded-[2px] px-5 py-5 flex flex-col gap-4 w-full"
+                style={{ maxWidth: tab === 'all' ? 'none' : 440, background: c.grad, border: `1px solid ${c.border}`, boxShadow: `0 0 24px ${c.glow}`, backdropFilter: 'blur(10px)' }}>
 
                 {/* Logo + nombre */}
                 <div className="flex items-center gap-3">
                   {logos.map((src, i) => (
-                    <img key={i} src={src} alt="" className="h-6 w-auto object-contain"
-                      style={{ filter: 'brightness(0) invert(1)', opacity: 0.75 }} />
+                    <img key={i} src={src} alt="" className="h-8 w-auto object-contain"
+                      style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }} />
                   ))}
                   {logos.length === 0 && (
-                    <span className="font-condensed text-white/60 text-sm uppercase tracking-wider">{label}</span>
+                    <span className="font-condensed font-bold text-white uppercase tracking-widest" style={{ fontSize: '1.1rem' }}>{label}</span>
                   )}
                 </div>
 
                 {/* Números grandes */}
-                <div className="flex gap-4">
+                <div className="flex gap-6">
                   <div>
-                    <span className="font-display block" style={{ fontSize: '2.4rem', color: '#4ade80', lineHeight: 1 }}>{conv.active}</span>
-                    <span className="text-white/35 text-xs">registrados</span>
+                    <span className="font-display block" style={{ fontSize: '2.8rem', color: '#4ade80', lineHeight: 1 }}>{conv.active}</span>
+                    <span className="text-white/50 text-xs mt-1 block">registrados</span>
                   </div>
                   <div>
-                    <span className="font-display block" style={{ fontSize: '2.4rem', color: 'rgba(255,255,255,0.25)', lineHeight: 1 }}>{conv.total - conv.active}</span>
-                    <span className="text-white/25 text-xs">sin registrar</span>
+                    <span className="font-display block" style={{ fontSize: '2.8rem', color: 'rgba(255,255,255,0.30)', lineHeight: 1 }}>{conv.total - conv.active}</span>
+                    <span className="text-white/30 text-xs mt-1 block">sin registrar</span>
                   </div>
                 </div>
 
                 {/* Barra de progreso */}
-                <div className="h-1.5 rounded-full overflow-hidden bg-white/[0.06]">
-                  <div className="h-full rounded-full" style={{ width: `${conv.pct}%`, background: '#4ade80', transition: 'width 0.5s ease' }} />
+                <div className="h-2 rounded-full overflow-hidden bg-white/[0.08]">
+                  <div className="h-full rounded-full" style={{ width: `${conv.pct}%`, background: c.accent, transition: 'width 0.5s ease' }} />
                 </div>
-                <span className="text-white/30 text-xs -mt-2">{conv.pct}% de {conv.total} concesionarios</span>
+                <span className="text-white/40 text-xs -mt-2">{conv.pct}% de {conv.total} concesionarios</span>
 
                 {/* Botón */}
                 <button onClick={() => downloadConcesionariosCSV(data, tabId)}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-[2px] text-sm font-semibold text-white/80 border border-white/[0.10] hover:border-mopar-blue hover:text-white hover:bg-mopar-blue/10 transition-all">
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-[2px] text-sm font-semibold text-white transition-all"
+                  style={{ background: c.accent, opacity: 0.9 }}
+                  onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+                  onMouseLeave={e => e.currentTarget.style.opacity = '0.9'}>
                   <Download size={14} /> Descargar CSV
                 </button>
               </div>
+            )})
             ))}
           </div>
         </div>
