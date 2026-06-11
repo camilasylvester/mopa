@@ -119,8 +119,8 @@ export const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUNn-n1
 // ─────────────────────────────────────────────
 const CONTENT = {
   'material-pop': {
-    jeep:    { folderUrl: 'https://drive.google.com/drive/folders/10i79wmGd_J48y8VZhv2QASKwuR2bKtwf?usp=sharing',  zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/10i79wmGd_J48y8VZhv2QASKwuR2bKtwf?usp=sharing',  lastUpdate: 'Mayo 2026' },
-    ram:     { folderUrl: 'https://drive.google.com/drive/folders/1fyf1UuEDGtYuDrOKH8W_QjRhpYfoBL71?usp=sharing',  zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/1fyf1UuEDGtYuDrOKH8W_QjRhpYfoBL71?usp=sharing',  lastUpdate: 'Mayo 2026' },
+    jeep:    { folderUrl: 'https://drive.google.com/drive/folders/10i79wmGd_J48y8VZhv2QASKwuR2bKtwf?usp=drive_link', zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/10i79wmGd_J48y8VZhv2QASKwuR2bKtwf?usp=drive_link', lastUpdate: 'Mayo 2026' },
+    ram:     { folderUrl: 'https://drive.google.com/drive/folders/1fyf1UuEDGtYuDrOKH8W_QjRhpYfoBL71?usp=drive_link', zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/1fyf1UuEDGtYuDrOKH8W_QjRhpYfoBL71?usp=drive_link', lastUpdate: 'Mayo 2026' },
     peugeot: { folderUrl: 'https://drive.google.com/drive/folders/1UW6u71Ex6VF0KHCRSd5ZWXQOPOFT18X5?usp=drive_link', zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/1UW6u71Ex6VF0KHCRSd5ZWXQOPOFT18X5?usp=drive_link', lastUpdate: 'Mayo 2026' },
     fiat:    { folderUrl: 'https://drive.google.com/drive/folders/153l1IWggOlJZAnhIA70grK9ac1TjcFbS?usp=drive_link',  zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/153l1IWggOlJZAnhIA70grK9ac1TjcFbS?usp=drive_link',  lastUpdate: 'Mayo 2026' },
     citroen: { folderUrl: 'https://drive.google.com/drive/folders/10sDLBWwiH9dz9UCXH4c0EJh8pMNkltP7?usp=drive_link', zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/10sDLBWwiH9dz9UCXH4c0EJh8pMNkltP7?usp=drive_link', lastUpdate: 'Mayo 2026' },
