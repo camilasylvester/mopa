@@ -143,10 +143,10 @@ function MetricCard({ label, value, sub, icon: Icon, accent = '#0066B3' }) {
   return (
     <div className="rounded-[2px] px-6 py-5 flex flex-col gap-2"
       style={{
-        background: 'rgba(255,255,255,0.04)',
-        border: `1px solid ${accent}40`,
-        boxShadow: `0 0 30px ${accent}18`,
-        backdropFilter: 'blur(10px)',
+        background: 'rgba(10,14,30,0.80)',
+        border: `1px solid ${accent}55`,
+        boxShadow: `0 0 30px ${accent}22`,
+        backdropFilter: 'blur(16px)',
       }}>
       <div className="flex items-center gap-2">
         <Icon size={13} style={{ color: accent }} />
@@ -184,8 +184,8 @@ function MarcaCard({ tab, count, conv, isActive, onClick }) {
     <button onClick={onClick}
       className="rounded-[2px] px-4 py-4 flex flex-col gap-2 text-left transition-all duration-300 w-full"
       style={{
-        background:     isActive ? colors.bg : 'rgba(255,255,255,0.04)',
-        border:         `1px solid ${isActive ? colors.border : 'rgba(255,255,255,0.08)'}`,
+        background:     isActive ? colors.bg : 'rgba(10,14,30,0.75)',
+        border:         `1px solid ${isActive ? colors.border : 'rgba(255,255,255,0.14)'}`,
         boxShadow:      isActive ? `0 0 30px ${colors.glow}` : 'none',
         backdropFilter: 'blur(10px)',
       }}>
@@ -224,7 +224,7 @@ function MarcaCard({ tab, count, conv, isActive, onClick }) {
 function BarList({ title, icon: Icon, items, accent = '#0066B3' }) {
   const max = items[0]?.[1] || 1
   return (
-    <div className="rounded-[2px] px-5 py-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)' }}>
+    <div className="rounded-[2px] px-5 py-4" style={{ background: 'rgba(10,14,30,0.80)', border: '1px solid rgba(255,255,255,0.14)', backdropFilter: 'blur(16px)' }}>
       <div className="flex items-center gap-2 mb-4">
         {Icon && <Icon size={13} className="text-white/30" />}
         <p className="text-white/30 text-[0.62rem] uppercase tracking-widest font-semibold">{title}</p>
@@ -268,7 +268,7 @@ function EngagementChart({ data }) {
   const max = Math.max(...days.map(([, v]) => v), 1)
 
   return (
-    <div className="rounded-[2px] px-5 py-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)' }}>
+    <div className="rounded-[2px] px-5 py-4" style={{ background: 'rgba(10,14,30,0.80)', border: '1px solid rgba(255,255,255,0.14)', backdropFilter: 'blur(16px)' }}>
       <div className="flex items-center gap-2 mb-4">
         <TrendingUp size={13} className="text-white/30" />
         <p className="text-white/30 text-[0.62rem] uppercase tracking-widest font-semibold">Engagement — Registros últimos 14 días</p>
@@ -352,19 +352,15 @@ export default function Dashboard() {
   return (
     <div className="relative bg-[#07070C] min-h-screen text-white font-sans">
 
-      {/* ── Imagen de fondo con overlay ── */}
+      {/* ── Fondo ── */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0" style={{
           backgroundImage: "url('/fondo.png')",
           backgroundSize: 'cover',
-          backgroundPosition: 'center 40%',
+          backgroundPosition: 'center 30%',
           backgroundRepeat: 'no-repeat',
         }} />
-        <div className="absolute inset-0" style={{ background: 'rgba(7,7,12,0.88)' }} />
-        {/* Degradado inferior para que la tabla sea legible */}
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, transparent 0%, rgba(7,7,12,0.6) 50%, rgba(7,7,12,0.97) 75%)'
-        }} />
+        <div className="absolute inset-0" style={{ background: 'rgba(7,7,12,0.65)' }} />
       </div>
 
       {/* ── Header ── */}
