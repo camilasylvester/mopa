@@ -140,11 +140,11 @@ const CONTENT = {
     citroen: { folderUrl: null, zipUrl: null, viewUrl: null, lastUpdate: null },
   },
   'material-pop-qr': {
-    jeep:    { folderUrl: null, zipUrl: null, viewUrl: null, lastUpdate: null },
-    ram:     { folderUrl: null, zipUrl: null, viewUrl: null, lastUpdate: null },
-    peugeot: { folderUrl: null, zipUrl: null, viewUrl: null, lastUpdate: null },
-    fiat:    { folderUrl: null, zipUrl: null, viewUrl: null, lastUpdate: null },
-    citroen: { folderUrl: null, zipUrl: null, viewUrl: null, lastUpdate: null },
+    jeep:    { folderUrl: 'https://drive.google.com/drive/folders/1c08gqZN1DshikQMdneNqlW2BfcJU_8hV?usp=drive_link', zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/1c08gqZN1DshikQMdneNqlW2BfcJU_8hV?usp=drive_link', lastUpdate: 'Mayo 2026' },
+    ram:     { folderUrl: 'https://drive.google.com/drive/folders/1EXtZNDbMiY75n3J7ut2V5PFVv4yJ1-Gp?usp=drive_link', zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/1EXtZNDbMiY75n3J7ut2V5PFVv4yJ1-Gp?usp=drive_link', lastUpdate: 'Mayo 2026' },
+    peugeot: { folderUrl: 'https://drive.google.com/drive/folders/1e0VL-LLq0Bwj1SvWOvAC7DZzJXd46ENV?usp=drive_link', zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/1e0VL-LLq0Bwj1SvWOvAC7DZzJXd46ENV?usp=drive_link', lastUpdate: 'Mayo 2026' },
+    fiat:    { folderUrl: 'https://drive.google.com/drive/folders/14lWXnbqJnlBaYOwe_ubclUGG_7ExZiAF?usp=drive_link', zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/14lWXnbqJnlBaYOwe_ubclUGG_7ExZiAF?usp=drive_link', lastUpdate: 'Mayo 2026' },
+    citroen: { folderUrl: 'https://drive.google.com/drive/folders/19YJjzTGcfnzb5Gggggt7hZu7jDGH7hPH?usp=drive_link', zipUrl: null, viewUrl: 'https://drive.google.com/drive/folders/19YJjzTGcfnzb5Gggggt7hZu7jDGH7hPH?usp=drive_link', lastUpdate: 'Mayo 2026' },
   },
 }
 
