@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Download, LogOut, Users, TrendingUp, MapPin, RefreshCw, AlertCircle, Store } from 'lucide-react'
+import ExcelJS from 'exceljs'
 import { supabase, TABLE } from '../lib/supabase.js'
 import { DEALERS } from '../data/dealers.js'
 
@@ -36,12 +37,11 @@ function getDealerList(tabId) {
 // Normalizar nombre para comparación flexible
 const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim()
 
-// ─── CSV concesionarios (para el cliente) ─────────────────────
-function downloadConcesionariosCSV(allData, tabId) {
+// ─── XLSX concesionarios (para el cliente) ────────────────────
+async function downloadConcesionariosXLSX(allData, tabId) {
   const tab      = MARCA_TABS.find(t => t.id === tabId)
   const filtered = filterByMarca(allData, tabId)
 
-  // Contar registros por concesionario (normalizado)
   const countMap = {}
   filtered.forEach(r => {
     if (r.concesionario) {
@@ -51,37 +51,57 @@ function downloadConcesionariosCSV(allData, tabId) {
   })
 
   const dealers = getDealerList(tabId)
-  const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`
-
-  // Asignar estado a cada concesionario del DEALERS
   const rows = dealers.map(d => {
     const dn  = norm(d.concesionario)
     const key = Object.keys(countMap).find(k => k.includes(dn) || dn.includes(k)) || null
     const cnt = key ? countMap[key] : 0
     return { ...d, count: cnt, registered: cnt > 0 }
   })
-
-  // Registrados primero, luego no registrados
   rows.sort((a, b) => {
     if (a.registered && !b.registered) return -1
     if (!a.registered && b.registered) return 1
     return b.count - a.count
   })
 
-  const lines = [
-    ['Marca', 'Provincia', 'Concesionario', 'Estado', 'Registros'].join(','),
-    ...rows.map(r => [
-      r.marca, r.provincia, r.concesionario,
-      r.registered ? 'REGISTRADO' : 'NO REGISTRADO',
-      r.count
-    ].map(esc).join(','))
+  const wb    = new ExcelJS.Workbook()
+  const sheet = wb.addWorksheet('Concesionarios')
+
+  sheet.columns = [
+    { header: 'Marca',        key: 'marca',        width: 18 },
+    { header: 'Provincia',    key: 'provincia',     width: 22 },
+    { header: 'Concesionario',key: 'concesionario', width: 42 },
+    { header: 'Estado',       key: 'estado',        width: 18 },
+    { header: 'Registros',    key: 'count',         width: 12 },
   ]
 
-  const blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' })
-  const url  = URL.createObjectURL(blob)
-  const a    = document.createElement('a')
+  // Header styling
+  sheet.getRow(1).eachCell(cell => {
+    cell.font = { bold: true, color: { argb: 'FFFFFFFF' } }
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0066B3' } }
+    cell.alignment = { horizontal: 'center' }
+  })
+
+  rows.forEach(r => {
+    const row = sheet.addRow({
+      marca: r.marca, provincia: r.provincia, concesionario: r.concesionario,
+      estado: r.registered ? 'REGISTRADO' : 'NO REGISTRADO', count: r.count,
+    })
+    const fill = r.registered
+      ? { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC6EFCE' } }
+      : { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFC7CE' } }
+    const fontColor = r.registered ? { argb: 'FF1F6B2B' } : { argb: 'FF9C2A2A' }
+    row.eachCell(cell => {
+      cell.fill = fill
+      cell.font = { color: fontColor }
+    })
+  })
+
+  const buffer = await wb.xlsx.writeBuffer()
+  const blob   = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+  const url    = URL.createObjectURL(blob)
+  const a      = document.createElement('a')
   a.href = url
-  a.download = `concesionarios-${tab?.label || 'todos'}.csv`
+  a.download = `concesionarios-${tab?.label || 'todos'}.xlsx`
   a.click()
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
@@ -420,10 +440,10 @@ export default function Dashboard() {
                 </span>
               </div>
             </div>
-            <button onClick={() => downloadConcesionariosCSV(data, 'all')}
+            <button onClick={() => downloadConcesionariosXLSX(data, 'all')}
               className="flex items-center gap-2.5 px-6 py-3 rounded-[2px] text-sm font-semibold text-white transition-all hover:opacity-90"
               style={{ background: '#0066B3' }}>
-              <Download size={15} /> Descargar CSV — Todas
+              <Download size={15} /> Descargar Excel — Todas
             </button>
           </div>}
 
@@ -468,10 +488,10 @@ export default function Dashboard() {
                   <p className="text-gray-400 text-xs text-center -mt-2">{conv.pct}% de {conv.total} concesionarios activos</p>
 
                   {/* Botón */}
-                  <button onClick={() => downloadConcesionariosCSV(data, tabId)}
+                  <button onClick={() => downloadConcesionariosXLSX(data, tabId)}
                     className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90"
                     style={{ background: c.accent }}>
-                    <Download size={14} /> Descargar CSV
+                    <Download size={14} /> Descargar Excel
                   </button>
                 </div>
               </div>
