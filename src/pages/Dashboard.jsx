@@ -118,18 +118,20 @@ function PasswordGate({ onAuth }) {
     else { setErr(true); setPw('') }
   }
   return (
-    <div className="bg-[#07070C] min-h-screen flex items-center justify-center px-6">
+    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: '#F4F5F8' }}>
       <div className="w-full max-w-[360px]">
-        <img src="/Logo_Mopar-NEGBlanco-02.png" alt="MOPAR" className="h-12 w-auto mb-8 opacity-85" />
-        <h1 className="font-display text-3xl text-white tracking-wide mb-1">PANEL INTERNO</h1>
-        <p className="text-white/35 text-sm mb-8">Campaña Lubricantes MOPAR 2026</p>
+        <div className="bg-[#07070C] rounded-lg px-6 py-4 mb-8 inline-block">
+          <img src="/Logo_Mopar-NEGBlanco-02.png" alt="MOPAR" className="h-10 w-auto" />
+        </div>
+        <h1 className="font-display text-3xl text-[#0F1117] tracking-wide mb-1">PANEL INTERNO</h1>
+        <p className="text-gray-500 text-sm mb-8">Campaña Lubricantes MOPAR 2026</p>
         <form onSubmit={submit} className="flex flex-col gap-3">
           <input type="password" value={pw} autoFocus onChange={e => { setPw(e.target.value); setErr(false) }}
             placeholder="Contraseña"
-            className="w-full rounded-[2px] px-4 py-3 text-white text-sm placeholder:text-white/25 bg-white/[0.05] focus:outline-none transition-colors"
-            style={{ border: `1px solid ${err ? 'rgba(239,68,68,0.55)' : 'rgba(255,255,255,0.10)'}` }} />
-          {err && <div className="flex items-center gap-1.5 text-red-400/75 text-xs"><AlertCircle size={12} /> Contraseña incorrecta</div>}
-          <button type="submit" className="w-full py-3 rounded-[2px] text-sm font-semibold text-white" style={{ background: '#0066B3' }}>
+            className="w-full rounded-lg px-4 py-3 text-[#0F1117] text-sm placeholder:text-gray-400 bg-white focus:outline-none transition-colors"
+            style={{ border: `1px solid ${err ? '#EF4444' : '#E5E7EB'}`, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }} />
+          {err && <div className="flex items-center gap-1.5 text-red-500 text-xs"><AlertCircle size={12} /> Contraseña incorrecta</div>}
+          <button type="submit" className="w-full py-3 rounded-lg text-sm font-semibold text-white" style={{ background: '#0066B3' }}>
             Ingresar
           </button>
         </form>
@@ -141,19 +143,14 @@ function PasswordGate({ onAuth }) {
 // ─── Metric Card ───────────────────────────────────────────────
 function MetricCard({ label, value, sub, icon: Icon, accent = '#0066B3' }) {
   return (
-    <div className="rounded-[2px] px-6 py-5 flex flex-col gap-2"
-      style={{
-        background: 'rgba(10,14,30,0.80)',
-        border: `1px solid ${accent}55`,
-        boxShadow: `0 0 30px ${accent}22`,
-        backdropFilter: 'blur(16px)',
-      }}>
+    <div className="rounded-xl px-6 py-5 flex flex-col gap-2 bg-white"
+      style={{ borderLeft: `4px solid ${accent}`, boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}>
       <div className="flex items-center gap-2">
         <Icon size={13} style={{ color: accent }} />
-        <span className="font-condensed text-[0.68rem] uppercase tracking-[0.2em] font-semibold" style={{ color: `${accent}cc` }}>{label}</span>
+        <span className="text-[0.68rem] uppercase tracking-widest font-semibold text-gray-400">{label}</span>
       </div>
-      <span className="font-display text-white" style={{ fontSize: 'clamp(2.2rem, 3vw, 3rem)', textShadow: `0 0 40px ${accent}55` }}>{value}</span>
-      {sub && <span className="text-white/35 text-[0.65rem]">{sub}</span>}
+      <span className="font-display text-[#0F1117]" style={{ fontSize: 'clamp(2rem, 3vw, 2.8rem)' }}>{value}</span>
+      {sub && <span className="text-gray-400 text-[0.65rem]">{sub}</span>}
     </div>
   )
 }
@@ -182,38 +179,37 @@ function MarcaCard({ tab, count, conv, isActive, onClick }) {
   const colors = TAB_COLORS[tab.id] || TAB_COLORS.all
   return (
     <button onClick={onClick}
-      className="rounded-[2px] px-4 py-4 flex flex-col gap-2 text-left transition-all duration-300 w-full"
+      className="rounded-xl px-4 py-4 flex flex-col gap-2 text-left transition-all duration-200 w-full"
       style={{
-        background:     isActive ? colors.bg : 'rgba(10,14,30,0.75)',
-        border:         `1px solid ${isActive ? colors.border : 'rgba(255,255,255,0.14)'}`,
-        boxShadow:      isActive ? `0 0 30px ${colors.glow}` : 'none',
-        backdropFilter: 'blur(10px)',
+        background: isActive ? colors.accent : 'white',
+        border:     `1px solid ${isActive ? colors.accent : '#E5E7EB'}`,
+        boxShadow:  isActive ? `0 4px 20px ${colors.glow}` : '0 2px 8px rgba(0,0,0,0.06)',
       }}>
 
       {/* Logos */}
-      <div className="flex items-center gap-3 min-h-[3rem]">
+      <div className="flex items-center gap-3 min-h-[2.5rem]">
         {logos.length > 0 ? logos.map((src, i) => (
-          <img key={i} src={src} alt="" className="h-10 w-auto object-contain"
-            style={{ filter: 'brightness(0) invert(1)', opacity: isActive ? 1 : 0.35 }} />
+          <img key={i} src={src} alt="" className="h-8 w-auto object-contain"
+            style={{ filter: isActive ? 'brightness(0) invert(1)' : 'none', opacity: isActive ? 1 : 0.7 }} />
         )) : (
           <span className="font-condensed font-bold uppercase tracking-widest"
-            style={{ fontSize: 'clamp(1rem, 2vw, 1.3rem)', color: isActive ? '#ffffff' : 'rgba(255,255,255,0.35)' }}>
+            style={{ fontSize: '1.1rem', color: isActive ? '#ffffff' : '#374151' }}>
             {tab.label}
           </span>
         )}
       </div>
 
       {/* Participantes */}
-      <span className="font-display text-white" style={{ fontSize: 'clamp(1.8rem, 2.5vw, 2.6rem)' }}>
+      <span className="font-display" style={{ fontSize: 'clamp(1.8rem, 2.5vw, 2.4rem)', color: isActive ? '#ffffff' : '#0F1117' }}>
         {fmt(count)}
-        <span className="text-white/30 text-sm font-sans ml-1.5">participantes</span>
+        <span className="text-sm font-sans ml-1.5" style={{ color: isActive ? 'rgba(255,255,255,0.6)' : '#9CA3AF' }}>participantes</span>
       </span>
 
       {/* Conversión — solo cuando está activa */}
       {isActive && conv && (
-        <div className="border-t border-white/[0.08] pt-2 mt-0.5 flex items-center justify-between">
-          <span className="text-white/40 text-xs">{conv.active} de {conv.total} concesionarios</span>
-          <span className="font-display text-xl" style={{ color: colors.accent }}>{conv.pct}%</span>
+        <div className="border-t border-white/20 pt-2 mt-0.5 flex items-center justify-between">
+          <span className="text-white/70 text-xs">{conv.active} de {conv.total} concesionarios</span>
+          <span className="font-display text-white text-xl">{conv.pct}%</span>
         </div>
       )}
     </button>
@@ -224,20 +220,20 @@ function MarcaCard({ tab, count, conv, isActive, onClick }) {
 function BarList({ title, icon: Icon, items, accent = '#0066B3' }) {
   const max = items[0]?.[1] || 1
   return (
-    <div className="rounded-[2px] px-5 py-4" style={{ background: 'rgba(10,14,30,0.80)', border: '1px solid rgba(255,255,255,0.14)', backdropFilter: 'blur(16px)' }}>
+    <div className="rounded-xl px-5 py-4 bg-white" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}>
       <div className="flex items-center gap-2 mb-4">
-        {Icon && <Icon size={13} className="text-white/30" />}
-        <p className="text-white/30 text-[0.62rem] uppercase tracking-widest font-semibold">{title}</p>
+        {Icon && <Icon size={13} className="text-gray-400" />}
+        <p className="text-gray-400 text-[0.62rem] uppercase tracking-widest font-semibold">{title}</p>
       </div>
-      {items.length === 0 && <p className="text-white/20 text-xs">Sin datos</p>}
+      {items.length === 0 && <p className="text-gray-300 text-xs">Sin datos</p>}
       <div className="flex flex-col gap-3">
         {items.map(([name, count]) => (
           <div key={name}>
             <div className="flex justify-between mb-1">
-              <span className="text-white/70 text-xs truncate max-w-[75%]">{name}</span>
-              <span className="text-white/40 text-xs font-mono">{fmt(count)}</span>
+              <span className="text-gray-700 text-xs truncate max-w-[75%]">{name}</span>
+              <span className="text-gray-400 text-xs font-mono">{fmt(count)}</span>
             </div>
-            <div className="h-[3px] rounded-full overflow-hidden bg-white/[0.06]">
+            <div className="h-[3px] rounded-full overflow-hidden bg-gray-100">
               <div className="h-full rounded-full" style={{ width: `${(count / max) * 100}%`, background: accent, transition: 'width 0.5s ease' }} />
             </div>
           </div>
@@ -268,20 +264,20 @@ function EngagementChart({ data }) {
   const max = Math.max(...days.map(([, v]) => v), 1)
 
   return (
-    <div className="rounded-[2px] px-5 py-4" style={{ background: 'rgba(10,14,30,0.80)', border: '1px solid rgba(255,255,255,0.14)', backdropFilter: 'blur(16px)' }}>
+    <div className="rounded-xl px-5 py-4 bg-white" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}>
       <div className="flex items-center gap-2 mb-4">
-        <TrendingUp size={13} className="text-white/30" />
-        <p className="text-white/30 text-[0.62rem] uppercase tracking-widest font-semibold">Engagement — Registros últimos 14 días</p>
+        <TrendingUp size={13} className="text-gray-400" />
+        <p className="text-gray-400 text-[0.62rem] uppercase tracking-widest font-semibold">Engagement — Registros últimos 14 días</p>
       </div>
       <div className="flex items-end gap-1.5 h-20">
         {days.map(([label, count]) => (
           <div key={label} className="flex-1 flex flex-col items-center gap-1 group">
-            <span className="text-white/0 group-hover:text-white/50 text-[0.5rem] transition-colors">{count || ''}</span>
+            <span className="text-transparent group-hover:text-gray-400 text-[0.5rem] transition-colors">{count || ''}</span>
             <div className="w-full rounded-sm transition-all duration-300" style={{
               height: `${Math.max((count / max) * 64, count > 0 ? 4 : 0)}px`,
-              background: count > 0 ? '#0066B3' : 'rgba(255,255,255,0.06)',
+              background: count > 0 ? '#0066B3' : '#E5E7EB',
             }} />
-            <span className="text-white/25 text-[0.48rem] rotate-0 whitespace-nowrap">{label}</span>
+            <span className="text-gray-300 text-[0.48rem] whitespace-nowrap">{label}</span>
           </div>
         ))}
       </div>
@@ -350,42 +346,31 @@ export default function Dashboard() {
   if (!authed) return <PasswordGate onAuth={() => setAuthed(true)} />
 
   return (
-    <div className="relative bg-[#07070C] min-h-screen text-white font-sans">
-
-      {/* ── Fondo ── */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0" style={{
-          backgroundImage: "url('/fondo.png')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center 30%',
-          backgroundRepeat: 'no-repeat',
-        }} />
-        <div className="absolute inset-0" style={{ background: 'rgba(7,7,12,0.65)' }} />
-      </div>
+    <div className="min-h-screen font-sans" style={{ background: '#F4F5F8' }}>
 
       {/* ── Header ── */}
-      <header className="relative z-40 border-b border-white/[0.08] px-6 h-[64px] flex items-center justify-between sticky top-0"
-        style={{ background: 'rgba(7,7,12,0.80)', backdropFilter: 'blur(20px)' }}>
+      <header className="bg-[#07070C] px-6 h-[64px] flex items-center justify-between sticky top-0 z-40"
+        style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
         <div className="flex items-center gap-4">
-          <img src="/Logo_Mopar-NEGBlanco-02.png" alt="MOPAR" className="h-8 w-auto opacity-85" />
-          <div className="w-px h-5 bg-white/10" />
+          <img src="/Logo_Mopar-NEGBlanco-02.png" alt="MOPAR" className="h-8 w-auto opacity-90" />
+          <div className="w-px h-5 bg-white/15" />
           <div>
-            <p className="font-condensed text-white/85 text-[0.78rem] tracking-widest uppercase leading-none">Panel Interno</p>
-            <p className="text-white/28 text-[0.58rem] uppercase tracking-wider leading-none mt-0.5">Campaña Lubricantes 2026</p>
+            <p className="font-condensed text-white text-[0.78rem] tracking-widest uppercase leading-none">Panel Interno</p>
+            <p className="text-white/40 text-[0.58rem] uppercase tracking-wider leading-none mt-0.5">Campaña Lubricantes 2026</p>
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <button onClick={fetchData} className="flex items-center gap-1.5 text-white/35 hover:text-white/70 text-xs transition-colors">
+          <button onClick={fetchData} className="flex items-center gap-1.5 text-white/50 hover:text-white text-xs transition-colors">
             <RefreshCw size={12} className={loading ? 'animate-spin' : ''} /> Actualizar
           </button>
           <button onClick={() => { sessionStorage.removeItem('mopa_auth'); setAuthed(false) }}
-            className="flex items-center gap-1.5 text-white/35 hover:text-white/70 text-xs transition-colors">
+            className="flex items-center gap-1.5 text-white/50 hover:text-white text-xs transition-colors">
             <LogOut size={12} /> Salir
           </button>
         </div>
       </header>
 
-      <main className="relative z-10 max-w-[1360px] mx-auto px-6 py-8 flex flex-col gap-6">
+      <main className="max-w-[1360px] mx-auto px-6 py-8 flex flex-col gap-6">
 
         {error && (
           <div className="flex items-center gap-2 text-red-400/75 text-sm p-4 border border-red-400/20 rounded-[2px] bg-red-400/5">
@@ -395,7 +380,7 @@ export default function Dashboard() {
 
         {/* ── 1. Métricas principales ── */}
         <div>
-          <div className="flex items-center gap-3 mb-4"><span className="w-5 h-px bg-mopar-blue" /><p className="font-condensed text-white/40 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Métricas de performance</p></div>
+          <div className="flex items-center gap-3 mb-4"><span className="w-5 h-[2px] bg-[#0066B3]" /><p className="font-condensed text-gray-400 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Métricas de performance</p></div>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
             <MetricCard label="Participantes"            value={fmt(participantes)}                          icon={Users}      accent="#0066B3" />
             <MetricCard label="Concesionarios activos"   value={`${convGeneral.active} / ${convGeneral.total}`} icon={Store}      accent="#4ade80" sub="Con al menos 1 registro" />
@@ -407,7 +392,7 @@ export default function Dashboard() {
 
         {/* ── 2. Distribución por marca (clickeable = filtro) ── */}
         <div>
-          <div className="flex items-center gap-3 mb-4"><span className="w-5 h-px bg-mopar-blue" /><p className="font-condensed text-white/40 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Por marca — hacé click para filtrar</p></div>
+          <div className="flex items-center gap-3 mb-4"><span className="w-5 h-[2px] bg-[#0066B3]" /><p className="font-condensed text-gray-400 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Por marca — hacé click para filtrar</p></div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {MARCA_TABS.map(t => {
               const convMap = { all: convGeneral, jeepram: convJeepRam, peugeot: convPeugeot, citroen: convCitroen, fiat: convFiat }
@@ -428,8 +413,8 @@ export default function Dashboard() {
         {/* ── 3. Descargas por marca ── */}
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <span className="w-5 h-px bg-mopar-blue" />
-            <p className="font-condensed text-white/40 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Descargar concesionarios por marca</p>
+            <span className="w-5 h-[2px] bg-[#0066B3]" />
+            <p className="font-condensed text-gray-400 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Descargar concesionarios por marca</p>
           </div>
 
           {/* Card general — solo cuando están "Todas" */}
@@ -504,14 +489,14 @@ export default function Dashboard() {
                   <Download size={14} /> Descargar CSV
                 </button>
               </div>
-            )})
-            ))}
+            )})}
+
           </div>
         </div>
 
         {/* ── 4. Distribución geográfica ── */}
         <div>
-          <div className="flex items-center gap-3 mb-4"><span className="w-5 h-px bg-mopar-blue" /><p className="font-condensed text-white/40 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Distribución geográfica por concesionario</p></div>
+          <div className="flex items-center gap-3 mb-4"><span className="w-5 h-[2px] bg-[#0066B3]" /><p className="font-condensed text-gray-400 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Distribución geográfica por concesionario</p></div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <BarList title="Top Provincias"     icon={MapPin} items={topProvincias} />
             <BarList title="Top Concesionarias" icon={MapPin} items={topConcs}      />
