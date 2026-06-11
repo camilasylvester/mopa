@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Download, LogOut, Users, TrendingUp, MapPin, RefreshCw, AlertCircle } from 'lucide-react'
+import { Download, LogOut, Users, TrendingUp, MapPin, RefreshCw, AlertCircle, Store } from 'lucide-react'
 import { supabase, TABLE } from '../lib/supabase.js'
+import { DEALERS } from '../data/dealers.js'
 
 const PASSWORD  = 'promomopar'
 const PAGE_SIZE = 50
@@ -13,18 +14,75 @@ const MARCA_TABS = [
   { id: 'fiat',    label: 'Fiat',       marcas: ['fiat'] },
 ]
 
-// ─── CSV ───────────────────────────────────────────────────────
-function downloadCSV(rows, filename) {
-  const headers = ['Nombre', 'Email', 'Patente', 'Marca', 'Provincia', 'Concesionario', 'Resultado', 'Chances', 'Fecha']
-  const esc     = v => `"${String(v ?? '').replace(/"/g, '""')}"`
-  const lines   = [
-    headers.join(','),
-    ...rows.map(r => [r.nombre, r.email, r.patente, r.marca, r.provincia, r.concesionario, r.resultado, r.chances, r.created_at].map(esc).join(',')),
+// DEALERS keys por tab
+const DEALERS_KEY = {
+  jeepram: ['Jeep'],
+  peugeot: ['Peugeot'],
+  citroen: ['Citroën'],
+  fiat:    ['Fiat'],
+  all:     ['Jeep', 'Peugeot', 'Citroën', 'Fiat'],
+}
+
+// Lista plana de concesionarios de DEALERS para un tab
+function getDealerList(tabId) {
+  const keys = DEALERS_KEY[tabId] || []
+  return keys.flatMap(key =>
+    Object.entries(DEALERS[key] || {}).flatMap(([provincia, concs]) =>
+      concs.map(c => ({ concesionario: c, provincia, marca: key === 'Jeep' && tabId === 'jeepram' ? 'Jeep / RAM' : key }))
+    )
+  )
+}
+
+// Normalizar nombre para comparación flexible
+const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim()
+
+// ─── CSV concesionarios (para el cliente) ─────────────────────
+function downloadConcesionariosCSV(allData, tabId) {
+  const tab      = MARCA_TABS.find(t => t.id === tabId)
+  const filtered = filterByMarca(allData, tabId)
+
+  // Contar registros por concesionario (normalizado)
+  const countMap = {}
+  filtered.forEach(r => {
+    if (r.concesionario) {
+      const k = norm(r.concesionario)
+      countMap[k] = (countMap[k] || 0) + 1
+    }
+  })
+
+  const dealers = getDealerList(tabId)
+  const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`
+
+  // Asignar estado a cada concesionario del DEALERS
+  const rows = dealers.map(d => {
+    const dn  = norm(d.concesionario)
+    const key = Object.keys(countMap).find(k => k.includes(dn) || dn.includes(k)) || null
+    const cnt = key ? countMap[key] : 0
+    return { ...d, count: cnt, registered: cnt > 0 }
+  })
+
+  // Registrados primero, luego no registrados
+  rows.sort((a, b) => {
+    if (a.registered && !b.registered) return -1
+    if (!a.registered && b.registered) return 1
+    return b.count - a.count
+  })
+
+  const lines = [
+    ['Marca', 'Provincia', 'Concesionario', 'Estado', 'Registros'].join(','),
+    ...rows.map(r => [
+      r.marca, r.provincia, r.concesionario,
+      r.registered ? 'REGISTRADO' : 'NO REGISTRADO',
+      r.count
+    ].map(esc).join(','))
   ]
+
   const blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' })
   const url  = URL.createObjectURL(blob)
   const a    = document.createElement('a')
-  a.href = url; a.download = filename; a.click()
+  a.href = url
+  a.download = `concesionarios-${tab?.label || 'todos'}.csv`
+  a.click()
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
@@ -35,6 +93,20 @@ function filterByMarca(data, tabId) {
 }
 
 function fmt(n) { return (n || 0).toLocaleString('es-AR') }
+
+// Conversión de concesionarios: activos / total
+function useConversionConcs(data, tabId) {
+  return useMemo(() => {
+    const filtered = filterByMarca(data, tabId)
+    const registeredNorms = new Set(filtered.map(r => norm(r.concesionario)).filter(Boolean))
+    const dealers = getDealerList(tabId)
+    const active = dealers.filter(d => {
+      const dn = norm(d.concesionario)
+      return [...registeredNorms].some(k => k.includes(dn) || dn.includes(k))
+    }).length
+    return { active, total: dealers.length, pct: dealers.length > 0 ? Math.round((active / dealers.length) * 100) : 0 }
+  }, [data, tabId])
+}
 
 // ─── Password Gate ─────────────────────────────────────────────
 function PasswordGate({ onAuth }) {
@@ -206,10 +278,11 @@ export default function Dashboard() {
 
   // ── Métricas del brief ────────────────────────────────────────
   const participantes = filtered.length
-  const conversion    = useMemo(() => {
-    const jugaron = filtered.filter(r => r.resultado?.toLowerCase() !== 'pendiente').length
-    return participantes > 0 ? Math.round((jugaron / participantes) * 100) : 0
-  }, [filtered, participantes])
+  const convGeneral   = useConversionConcs(data, tab)
+  const convJeepRam   = useConversionConcs(data, 'jeepram')
+  const convPeugeot   = useConversionConcs(data, 'peugeot')
+  const convCitroen   = useConversionConcs(data, 'citroen')
+  const convFiat      = useConversionConcs(data, 'fiat')
 
   const topProvincias = useMemo(() => {
     const c = {}
@@ -285,9 +358,27 @@ export default function Dashboard() {
         {/* ── 1. Métricas principales ── */}
         <div>
           <div className="flex items-center gap-3 mb-4"><span className="w-5 h-px bg-mopar-blue" /><p className="font-condensed text-white/40 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Métricas de performance</p></div>
-          <div className="grid grid-cols-2 gap-3 max-w-lg">
-            <MetricCard label="Participantes" value={fmt(participantes)} icon={Users}      accent="#0066B3" />
-            <MetricCard label="Conversión"    value={`${conversion}%`}  icon={TrendingUp} accent="#fb923c" sub="Jugaron del total" />
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+            <MetricCard label="Participantes"            value={fmt(participantes)}                          icon={Users}      accent="#0066B3" />
+            <MetricCard label="Concesionarios activos"   value={`${convGeneral.active} / ${convGeneral.total}`} icon={Store}      accent="#4ade80" sub="Con al menos 1 registro" />
+            <MetricCard label="Conversión concesionarios" value={`${convGeneral.pct}%`}                      icon={TrendingUp} accent="#fb923c" sub={`${convGeneral.active} de ${convGeneral.total} concesionarios`} />
+          </div>
+
+          {/* Conversión por marca */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-3">
+            {[
+              { label: 'Jeep y RAM', conv: convJeepRam },
+              { label: 'Peugeot',    conv: convPeugeot },
+              { label: 'Citroën',    conv: convCitroen },
+              { label: 'Fiat',       conv: convFiat },
+            ].map(({ label, conv }) => (
+              <div key={label} className="rounded-[2px] px-4 py-3 flex flex-col gap-1"
+                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', backdropFilter: 'blur(10px)' }}>
+                <span className="font-condensed text-[0.62rem] uppercase tracking-widest text-white/30">{label}</span>
+                <span className="font-display text-white text-2xl">{conv.pct}%</span>
+                <span className="text-white/30 text-[0.62rem]">{conv.active} de {conv.total} concesionarios</span>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -326,9 +417,9 @@ export default function Dashboard() {
               Registros {tab !== 'all' ? `— ${MARCA_TABS.find(t => t.id === tab)?.label}` : '— Todos'} ({fmt(filtered.length)})
             </p>
             <div className="flex flex-wrap gap-2 items-center">
-              <span className="text-white/25 text-xs flex items-center gap-1"><Download size={11} /> Descargar CSV:</span>
+              <span className="text-white/25 text-xs flex items-center gap-1"><Store size={11} /> Concesionarios CSV:</span>
               {MARCA_TABS.map(t => (
-                <button key={t.id} onClick={() => handleDownload(t.id)}
+                <button key={t.id} onClick={() => downloadConcesionariosCSV(data, t.id)}
                   className="px-3 py-1.5 rounded-[2px] text-xs border border-white/[0.08] text-white/45 hover:text-white/75 hover:bg-white/[0.05] transition-all">
                   {t.label}
                 </button>
