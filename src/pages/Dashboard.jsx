@@ -445,48 +445,46 @@ export default function Dashboard() {
               { tabId: 'peugeot', label: 'Peugeot',    conv: convPeugeot, logos: [] },
               { tabId: 'citroen', label: 'Citroën',    conv: convCitroen, logos: ['/logos/citroen.png'] },
               { tabId: 'fiat',    label: 'Fiat',       conv: convFiat,    logos: ['/logos/fiat.png'] },
-            ].filter(({ tabId }) => tab === 'all' || tab === tabId).map(({ tabId, label, conv, logos }) => {
+            ].filter(({ tabId }) => tab === 'all' || tab === tabId).map(({ tabId, label, conv }) => {
               const c = TAB_COLORS[tabId] || TAB_COLORS.all
               return (
-              <div key={tabId} className="rounded-[2px] px-5 py-5 flex flex-col gap-4 w-full"
-                style={{ maxWidth: tab === 'all' ? 'none' : 440, background: c.grad, border: `1px solid ${c.border}`, boxShadow: `0 0 24px ${c.glow}`, backdropFilter: 'blur(10px)' }}>
+              <div key={tabId} className="rounded-xl overflow-hidden w-full bg-white"
+                style={{ maxWidth: tab === 'all' ? 'none' : 440, boxShadow: '0 4px 16px rgba(0,0,0,0.10)' }}>
 
-                {/* Logo + nombre */}
-                <div className="flex items-center gap-3">
-                  {logos.map((src, i) => (
-                    <img key={i} src={src} alt="" className="h-8 w-auto object-contain" />
-                  ))}
-                  {logos.length === 0 && (
-                    <span className="font-condensed font-bold uppercase tracking-widest" style={{ fontSize: '1.1rem', color: c.accent }}>{label}</span>
-                  )}
+                {/* Header de color con nombre centrado */}
+                <div className="px-5 py-4 flex items-center justify-center"
+                  style={{ background: c.accent }}>
+                  <span className="font-condensed font-bold text-white uppercase tracking-widest text-lg">{label}</span>
                 </div>
 
-                {/* Números grandes */}
-                <div className="flex gap-6">
-                  <div>
-                    <span className="font-display block" style={{ fontSize: '2.8rem', color: c.accent, lineHeight: 1 }}>{conv.active}</span>
-                    <span className="text-gray-500 text-xs mt-1 block">registrados</span>
+                {/* Cuerpo */}
+                <div className="px-5 py-5 flex flex-col gap-4">
+                  {/* Números */}
+                  <div className="flex gap-6 justify-center">
+                    <div className="text-center">
+                      <span className="font-display block" style={{ fontSize: '3rem', color: c.accent, lineHeight: 1 }}>{conv.active}</span>
+                      <span className="text-gray-500 text-xs mt-1 block font-medium">registrados</span>
+                    </div>
+                    <div className="w-px bg-gray-100" />
+                    <div className="text-center">
+                      <span className="font-display block text-gray-300" style={{ fontSize: '3rem', lineHeight: 1 }}>{conv.total - conv.active}</span>
+                      <span className="text-gray-400 text-xs mt-1 block">sin registrar</span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="font-display block text-gray-300" style={{ fontSize: '2.8rem', lineHeight: 1 }}>{conv.total - conv.active}</span>
-                    <span className="text-gray-400 text-xs mt-1 block">sin registrar</span>
+
+                  {/* Barra */}
+                  <div className="h-2 rounded-full overflow-hidden bg-gray-100">
+                    <div className="h-full rounded-full transition-all duration-500" style={{ width: `${conv.pct}%`, background: c.accent }} />
                   </div>
-                </div>
+                  <p className="text-gray-400 text-xs text-center -mt-2">{conv.pct}% de {conv.total} concesionarios activos</p>
 
-                {/* Barra de progreso */}
-                <div className="h-2 rounded-full overflow-hidden bg-gray-200">
-                  <div className="h-full rounded-full" style={{ width: `${conv.pct}%`, background: c.accent, transition: 'width 0.5s ease' }} />
+                  {/* Botón */}
+                  <button onClick={() => downloadConcesionariosCSV(data, tabId)}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90"
+                    style={{ background: c.accent }}>
+                    <Download size={14} /> Descargar CSV
+                  </button>
                 </div>
-                <span className="text-gray-400 text-xs -mt-2">{conv.pct}% de {conv.total} concesionarios</span>
-
-                {/* Botón */}
-                <button onClick={() => downloadConcesionariosCSV(data, tabId)}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-[2px] text-sm font-semibold text-white transition-all"
-                  style={{ background: c.accent, opacity: 0.9 }}
-                  onMouseEnter={e => e.currentTarget.style.opacity = '1'}
-                  onMouseLeave={e => e.currentTarget.style.opacity = '0.9'}>
-                  <Download size={14} /> Descargar CSV
-                </button>
               </div>
             )})}
 
