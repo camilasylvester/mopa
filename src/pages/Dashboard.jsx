@@ -431,72 +431,81 @@ export default function Dashboard() {
         {/* ── 4. Engagement ── */}
         <EngagementChart data={filtered} />
 
-        {/* ── 5. Tabla + descargas ── */}
+        {/* ── 5. Descargas por marca ── */}
         <div>
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-            <p className="text-white/20 text-[0.6rem] uppercase tracking-widest font-semibold">
-              Registros {tab !== 'all' ? `— ${MARCA_TABS.find(t => t.id === tab)?.label}` : '— Todos'} ({fmt(filtered.length)})
-            </p>
-            <div className="flex flex-wrap gap-2 items-center">
-              <span className="text-white/25 text-xs flex items-center gap-1"><Store size={11} /> Concesionarios CSV:</span>
-              {MARCA_TABS.map(t => (
-                <button key={t.id} onClick={() => downloadConcesionariosCSV(data, t.id)}
-                  className="px-3 py-1.5 rounded-[2px] text-xs border border-white/[0.08] text-white/45 hover:text-white/75 hover:bg-white/[0.05] transition-all">
-                  {t.label}
-                </button>
-              ))}
-            </div>
+          <div className="flex items-center gap-3 mb-4">
+            <span className="w-5 h-px bg-mopar-blue" />
+            <p className="font-condensed text-white/40 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Descargar concesionarios por marca</p>
           </div>
 
-          <div className="rounded-[2px] border border-white/[0.08] overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr style={{ background: 'rgba(255,255,255,0.03)' }} className="border-b border-white/[0.08]">
-                    {['Nombre', 'Email', 'Patente', 'Marca', 'Provincia', 'Concesionario', 'Resultado', 'Chances', 'Fecha'].map(h => (
-                      <th key={h} className="text-left px-4 py-3 text-white/30 text-[0.62rem] uppercase tracking-widest font-semibold whitespace-nowrap">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr><td colSpan={9} className="text-center py-14 text-white/25 text-sm">Cargando datos...</td></tr>
-                  ) : paged.length === 0 ? (
-                    <tr><td colSpan={9} className="text-center py-14 text-white/20 text-sm">Sin registros</td></tr>
-                  ) : paged.map(r => (
-                    <tr key={r.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-                      <td className="px-4 py-3 text-white/80 whitespace-nowrap">{r.nombre        || '—'}</td>
-                      <td className="px-4 py-3 text-white/40 text-xs">{r.email                  || '—'}</td>
-                      <td className="px-4 py-3 text-white/55 font-mono text-xs">{r.patente       || '—'}</td>
-                      <td className="px-4 py-3 text-white/65">{r.marca                           || '—'}</td>
-                      <td className="px-4 py-3 text-white/55">{r.provincia                       || '—'}</td>
-                      <td className="px-4 py-3 text-white/45 text-xs max-w-[180px] truncate">{r.concesionario || '—'}</td>
-                      <td className="px-4 py-3"><ResultBadge value={r.resultado} /></td>
-                      <td className="px-4 py-3 text-white/50 text-center">{r.chances             || '—'}</td>
-                      <td className="px-4 py-3 text-white/30 text-xs whitespace-nowrap">
-                        {r.created_at ? new Date(r.created_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit' }) : '—'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between px-4 py-3 border-t border-white/[0.06]" style={{ background: 'rgba(255,255,255,0.02)' }}>
-                <span className="text-white/28 text-xs">{fmt(filtered.length)} registros · Pág. {page + 1}/{totalPages}</span>
-                <div className="flex gap-2">
-                  <button disabled={page === 0} onClick={() => setPage(p => p - 1)}
-                    className="px-3 py-1.5 rounded-[2px] text-xs border border-white/[0.08] text-white/45 disabled:opacity-25 hover:bg-white/[0.05] transition-colors">
-                    ← Anterior
-                  </button>
-                  <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}
-                    className="px-3 py-1.5 rounded-[2px] text-xs border border-white/[0.08] text-white/45 disabled:opacity-25 hover:bg-white/[0.05] transition-colors">
-                    Siguiente →
-                  </button>
-                </div>
+          {/* Card general */}
+          <div className="rounded-[2px] border border-white/[0.10] px-6 py-5 mb-3 flex flex-wrap items-center justify-between gap-4"
+            style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(10px)' }}>
+            <div>
+              <p className="font-condensed text-white text-lg uppercase tracking-wide mb-1">Todas las marcas</p>
+              <div className="flex gap-4">
+                <span className="flex items-center gap-1.5 text-sm" style={{ color: '#4ade80' }}>
+                  <span className="w-2 h-2 rounded-full bg-current" /> {convGeneral.active} registrados
+                </span>
+                <span className="flex items-center gap-1.5 text-sm text-white/35">
+                  <span className="w-2 h-2 rounded-full bg-current" /> {convGeneral.total - convGeneral.active} sin registrar
+                </span>
               </div>
-            )}
+            </div>
+            <button onClick={() => downloadConcesionariosCSV(data, 'all')}
+              className="flex items-center gap-2.5 px-6 py-3 rounded-[2px] text-sm font-semibold text-white transition-all hover:opacity-90"
+              style={{ background: '#0066B3' }}>
+              <Download size={15} /> Descargar CSV — Todas
+            </button>
+          </div>
+
+          {/* Cards por marca */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {[
+              { tabId: 'jeepram', label: 'Jeep y RAM', conv: convJeepRam, logos: ['/logos/jeep.png', '/logos/ram.png'] },
+              { tabId: 'peugeot', label: 'Peugeot',    conv: convPeugeot, logos: [] },
+              { tabId: 'citroen', label: 'Citroën',    conv: convCitroen, logos: ['/logos/citroen.png'] },
+              { tabId: 'fiat',    label: 'Fiat',       conv: convFiat,    logos: ['/logos/fiat.png'] },
+            ].map(({ tabId, label, conv, logos }) => (
+              <div key={tabId} className="rounded-[2px] border border-white/[0.08] px-5 py-5 flex flex-col gap-4"
+                style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(10px)' }}>
+
+                {/* Logo + nombre */}
+                <div className="flex items-center gap-3">
+                  {logos.map((src, i) => (
+                    <img key={i} src={src} alt="" className="h-6 w-auto object-contain"
+                      style={{ filter: 'brightness(0) invert(1)', opacity: 0.75 }} />
+                  ))}
+                  {logos.length === 0 && (
+                    <span className="font-condensed text-white/60 text-sm uppercase tracking-wider">{label}</span>
+                  )}
+                </div>
+
+                {/* Números grandes */}
+                <div className="flex gap-4">
+                  <div>
+                    <span className="font-display block" style={{ fontSize: '2.4rem', color: '#4ade80', lineHeight: 1 }}>{conv.active}</span>
+                    <span className="text-white/35 text-xs">registrados</span>
+                  </div>
+                  <div>
+                    <span className="font-display block" style={{ fontSize: '2.4rem', color: 'rgba(255,255,255,0.25)', lineHeight: 1 }}>{conv.total - conv.active}</span>
+                    <span className="text-white/25 text-xs">sin registrar</span>
+                  </div>
+                </div>
+
+                {/* Barra de progreso */}
+                <div className="h-1.5 rounded-full overflow-hidden bg-white/[0.06]">
+                  <div className="h-full rounded-full" style={{ width: `${conv.pct}%`, background: '#4ade80', transition: 'width 0.5s ease' }} />
+                </div>
+                <span className="text-white/30 text-xs -mt-2">{conv.pct}% de {conv.total} concesionarios</span>
+
+                {/* Botón */}
+                <button onClick={() => downloadConcesionariosCSV(data, tabId)}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-[2px] text-sm font-semibold text-white/80 border border-white/[0.10] hover:border-mopar-blue hover:text-white hover:bg-mopar-blue/10 transition-all">
+                  <Download size={14} /> Descargar CSV
+                </button>
+              </div>
+            ))}
           </div>
         </div>
 
