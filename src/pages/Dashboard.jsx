@@ -174,11 +174,12 @@ function MarcaCard({ tab, count, conv, isActive, onClick }) {
   const colors = TAB_COLORS[tab.id] || TAB_COLORS.all
   return (
     <button onClick={onClick}
-      className="rounded-xl px-4 py-5 flex flex-col items-center gap-2 text-center transition-all duration-200 w-full"
+      className="rounded-xl px-4 py-5 flex flex-col items-center gap-2 text-center transition-all duration-200 w-full overflow-hidden"
       style={{
-        background: isActive ? colors.accent : 'white',
-        border:     `1px solid ${isActive ? colors.accent : '#E5E7EB'}`,
-        boxShadow:  isActive ? `0 4px 20px ${colors.glow}` : '0 2px 8px rgba(0,0,0,0.06)',
+        background:  isActive ? colors.accent : 'white',
+        border:      `1px solid ${isActive ? colors.accent : '#E5E7EB'}`,
+        boxShadow:   isActive ? `0 4px 20px ${colors.glow}` : '0 2px 8px rgba(0,0,0,0.06)',
+        borderTop:   isActive ? `1px solid ${colors.accent}` : `3px solid ${colors.accent}`,
       }}>
 
       {/* Nombre centrado */}
