@@ -164,14 +164,9 @@ const TAB_LOGOS = {
   fiat:    ['/logos/fiat.png'],
 }
 
-// Colores por marca
-const TAB_COLORS = {
-  all:     { bg: 'rgba(0,102,179,0.12)',   border: 'rgba(0,102,179,0.55)',   accent: '#0066B3', glow: 'rgba(0,102,179,0.25)',   grad: 'rgba(0,102,179,0.15)' },
-  jeepram: { bg: 'rgba(74,144,48,0.12)',   border: 'rgba(74,144,48,0.55)',   accent: '#4A9030', glow: 'rgba(74,144,48,0.25)',   grad: 'rgba(74,144,48,0.15)' },
-  peugeot: { bg: 'rgba(42,108,189,0.12)',  border: 'rgba(42,108,189,0.55)',  accent: '#2A6CBD', glow: 'rgba(42,108,189,0.25)',  grad: 'rgba(42,108,189,0.15)' },
-  citroen: { bg: 'rgba(34,68,168,0.12)',   border: 'rgba(34,68,168,0.55)',   accent: '#2244A8', glow: 'rgba(34,68,168,0.25)',   grad: 'rgba(34,68,168,0.15)' },
-  fiat:    { bg: 'rgba(204,34,34,0.12)',   border: 'rgba(204,34,34,0.55)',   accent: '#CC2222', glow: 'rgba(204,34,34,0.25)',   grad: 'rgba(204,34,34,0.15)' },
-}
+// Colores por marca — uniforme MOPAR blue
+const UNIFORM = { bg: 'rgba(0,102,179,0.12)', border: 'rgba(0,102,179,0.55)', accent: '#0066B3', glow: 'rgba(0,102,179,0.25)', grad: 'rgba(0,102,179,0.15)' }
+const TAB_COLORS = { all: UNIFORM, jeepram: UNIFORM, peugeot: UNIFORM, citroen: UNIFORM, fiat: UNIFORM }
 
 // ─── Marca Card (clickeable) ───────────────────────────────────
 function MarcaCard({ tab, count, conv, isActive, onClick }) {
