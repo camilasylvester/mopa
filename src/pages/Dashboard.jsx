@@ -181,20 +181,20 @@ function MarcaCard({ tab, count, conv, isActive, onClick }) {
       }}>
 
       {/* Logos */}
-      <div className="flex items-center gap-2 h-6">
+      <div className="flex items-center gap-3 min-h-[3rem]">
         {logos.length > 0 ? logos.map((src, i) => (
-          <img key={i} src={src} alt="" className="h-5 w-auto object-contain"
-            style={{ filter: 'brightness(0) invert(1)', opacity: isActive ? 0.9 : 0.3 }} />
+          <img key={i} src={src} alt="" className="h-10 w-auto object-contain"
+            style={{ filter: 'brightness(0) invert(1)', opacity: isActive ? 1 : 0.35 }} />
         )) : (
-          <span className="font-condensed text-[0.6rem] uppercase tracking-widest"
-            style={{ color: isActive ? 'rgba(0,102,179,0.9)' : 'rgba(255,255,255,0.25)' }}>
+          <span className="font-condensed font-bold uppercase tracking-widest"
+            style={{ fontSize: 'clamp(1rem, 2vw, 1.3rem)', color: isActive ? '#ffffff' : 'rgba(255,255,255,0.35)' }}>
             {tab.label}
           </span>
         )}
       </div>
 
       {/* Participantes */}
-      <span className="font-display text-white" style={{ fontSize: 'clamp(1.6rem, 2vw, 2.2rem)' }}>
+      <span className="font-display text-white" style={{ fontSize: 'clamp(1.8rem, 2.5vw, 2.6rem)' }}>
         {fmt(count)}
         <span className="text-white/30 text-sm font-sans ml-1.5">participantes</span>
       </span>
@@ -448,15 +448,15 @@ export default function Dashboard() {
           </div>}
 
           {/* Cards por marca — filtra según tab activo */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className={tab === 'all' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3' : 'flex justify-center'}>
             {[
               { tabId: 'jeepram', label: 'Jeep y RAM', conv: convJeepRam, logos: ['/logos/jeep.png', '/logos/ram.png'] },
               { tabId: 'peugeot', label: 'Peugeot',    conv: convPeugeot, logos: [] },
               { tabId: 'citroen', label: 'Citroën',    conv: convCitroen, logos: ['/logos/citroen.png'] },
               { tabId: 'fiat',    label: 'Fiat',       conv: convFiat,    logos: ['/logos/fiat.png'] },
             ].filter(({ tabId }) => tab === 'all' || tab === tabId).map(({ tabId, label, conv, logos }) => (
-              <div key={tabId} className="rounded-[2px] border border-white/[0.14] px-5 py-5 flex flex-col gap-4"
-                style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(10px)' }}>
+              <div key={tabId} className="rounded-[2px] border border-white/[0.14] px-5 py-5 flex flex-col gap-4 w-full"
+                style={{ maxWidth: tab === 'all' ? 'none' : 420, background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(10px)' }}>
 
                 {/* Logo + nombre */}
                 <div className="flex items-center gap-3">
