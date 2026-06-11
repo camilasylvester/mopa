@@ -177,13 +177,14 @@ function ModuleCard({ mod, isOpen, onClick }) {
 
       {/* Título */}
       <h3
-        className="font-condensed leading-tight transition-colors duration-300"
+        className="font-condensed leading-tight transition-colors duration-300 flex items-center justify-center text-center"
         style={{
           fontSize: 'clamp(1.15rem, 2vw, 1.4rem)',
           letterSpacing: '0.10em',
           color: isOpen ? '#ffffff' : 'rgba(255,255,255,0.92)',
           textShadow: isOpen ? '0 1px 12px rgba(0,0,0,0.3)' : 'none',
           fontWeight: 700,
+          minHeight: '3rem',
         }}
       >
         {mod.title}
