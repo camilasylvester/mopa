@@ -418,15 +418,15 @@ export default function Dashboard() {
           </div>
 
           {/* Card general — solo cuando están "Todas" */}
-          {tab === 'all' && <div className="rounded-[2px] border border-mopar-blue/40 px-6 py-5 mb-3 flex flex-wrap items-center justify-between gap-4"
-            style={{ background: 'rgba(0,102,179,0.08)', backdropFilter: 'blur(10px)' }}>
+          {tab === 'all' && <div className="rounded-xl border border-[#0066B3]/20 px-6 py-5 mb-3 flex flex-wrap items-center justify-between gap-4 bg-white"
+            style={{ boxShadow: '0 2px 12px rgba(0,102,179,0.10)' }}>
             <div>
-              <p className="font-condensed text-white text-lg uppercase tracking-wide mb-1">Todas las marcas</p>
+              <p className="font-condensed text-[#0F1117] text-lg uppercase tracking-wide mb-1">Todas las marcas</p>
               <div className="flex gap-4">
-                <span className="flex items-center gap-1.5 text-sm" style={{ color: '#4ade80' }}>
+                <span className="flex items-center gap-1.5 text-sm font-medium" style={{ color: '#16a34a' }}>
                   <span className="w-2 h-2 rounded-full bg-current" /> {convGeneral.active} registrados
                 </span>
-                <span className="flex items-center gap-1.5 text-sm text-white/35">
+                <span className="flex items-center gap-1.5 text-sm text-gray-400">
                   <span className="w-2 h-2 rounded-full bg-current" /> {convGeneral.total - convGeneral.active} sin registrar
                 </span>
               </div>
@@ -454,31 +454,30 @@ export default function Dashboard() {
                 {/* Logo + nombre */}
                 <div className="flex items-center gap-3">
                   {logos.map((src, i) => (
-                    <img key={i} src={src} alt="" className="h-8 w-auto object-contain"
-                      style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }} />
+                    <img key={i} src={src} alt="" className="h-8 w-auto object-contain" />
                   ))}
                   {logos.length === 0 && (
-                    <span className="font-condensed font-bold text-white uppercase tracking-widest" style={{ fontSize: '1.1rem' }}>{label}</span>
+                    <span className="font-condensed font-bold uppercase tracking-widest" style={{ fontSize: '1.1rem', color: c.accent }}>{label}</span>
                   )}
                 </div>
 
                 {/* Números grandes */}
                 <div className="flex gap-6">
                   <div>
-                    <span className="font-display block" style={{ fontSize: '2.8rem', color: '#4ade80', lineHeight: 1 }}>{conv.active}</span>
-                    <span className="text-white/50 text-xs mt-1 block">registrados</span>
+                    <span className="font-display block" style={{ fontSize: '2.8rem', color: c.accent, lineHeight: 1 }}>{conv.active}</span>
+                    <span className="text-gray-500 text-xs mt-1 block">registrados</span>
                   </div>
                   <div>
-                    <span className="font-display block" style={{ fontSize: '2.8rem', color: 'rgba(255,255,255,0.30)', lineHeight: 1 }}>{conv.total - conv.active}</span>
-                    <span className="text-white/30 text-xs mt-1 block">sin registrar</span>
+                    <span className="font-display block text-gray-300" style={{ fontSize: '2.8rem', lineHeight: 1 }}>{conv.total - conv.active}</span>
+                    <span className="text-gray-400 text-xs mt-1 block">sin registrar</span>
                   </div>
                 </div>
 
                 {/* Barra de progreso */}
-                <div className="h-2 rounded-full overflow-hidden bg-white/[0.08]">
+                <div className="h-2 rounded-full overflow-hidden bg-gray-200">
                   <div className="h-full rounded-full" style={{ width: `${conv.pct}%`, background: c.accent, transition: 'width 0.5s ease' }} />
                 </div>
-                <span className="text-white/40 text-xs -mt-2">{conv.pct}% de {conv.total} concesionarios</span>
+                <span className="text-gray-400 text-xs -mt-2">{conv.pct}% de {conv.total} concesionarios</span>
 
                 {/* Botón */}
                 <button onClick={() => downloadConcesionariosCSV(data, tabId)}
