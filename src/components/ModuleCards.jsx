@@ -186,11 +186,7 @@ function ModuleCard({ mod, isOpen, onClick }) {
           fontWeight: 700,
         }}
       >
-        {mod.id === 'qrs' ? (
-          <>QR<span style={{ fontSize: '0.6em', verticalAlign: 'baseline', letterSpacing: '0.08em' }}>S</span></>
-        ) : (
-          mod.title
-        )}
+        {mod.title}
       </h3>
 
       {/* Subtítulo */}

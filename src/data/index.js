@@ -3,12 +3,12 @@
 // ─────────────────────────────────────────────
 
 export const NAV_LINKS = [
-  { label: 'Inicio',          href: '#inicio',   moduleId: null },
-  { label: 'Material POP',    href: '#modulos',  moduleId: 'material-pop' },
-  { label: 'Evidencia POP',   href: '#modulos',  moduleId: 'evidencia-pop' },
-  { label: 'QRS',             href: '#modulos',  moduleId: 'qrs' },
-  { label: 'Piezas Digitales',href: '#modulos',  moduleId: 'piezas-digitales' },
-  { label: 'BBCC',            href: '#modulos',  moduleId: 'bbcc' },
+  { label: 'Inicio',              href: '#inicio',   moduleId: null },
+  { label: 'Material POP',        href: '#modulos',  moduleId: 'material-pop' },
+  { label: 'Material POP con QR', href: '#modulos',  moduleId: 'material-pop-qr' },
+  { label: 'Piezas Digitales',    href: '#modulos',  moduleId: 'piezas-digitales' },
+  { label: 'Evidencia POP',       href: '#modulos',  moduleId: 'evidencia-pop' },
+  { label: 'BBCC',                href: '#modulos',  moduleId: 'bbcc' },
 ]
 
 export const STATS = [
@@ -24,33 +24,33 @@ export const MODULES = [
     number: '01',
     iconName: 'Package',
     title: 'Material POP',
-    subtitle: 'Materiales de activación para el concesionario',
+    subtitle: 'Descargá el material de activación para tu concesionario (sin QR)',
+  },
+  {
+    id: 'material-pop-qr',
+    number: '02',
+    iconName: 'QrCode',
+    title: 'Material POP con QR',
+    subtitle: 'Descargá el material de activación para tu concesionario (con QR)',
   },
   {
     id: 'piezas-digitales',
-    number: '02',
+    number: '03',
     iconName: 'Monitor',
     title: 'Piezas Digitales',
     subtitle: 'Piezas para redes y comunicación digital',
   },
   {
     id: 'evidencia-pop',
-    number: '03',
+    number: '04',
     iconName: 'Camera',
     title: 'Evidencia POP',
     subtitle: 'Subí evidencia de activación en tu concesionario',
   },
   {
-    id: 'qrs',
-    number: '04',
-    iconName: 'QrCode',
-    title: 'QRS',
-    subtitle: 'Código QR para el bot',
-  },
-  {
     id: 'bbcc',
     number: '05',
-    iconName: 'Users',
+    iconName: 'FileText',
     title: 'BBCC',
     subtitle: 'Bases y condiciones de la campaña',
   },
@@ -139,7 +139,7 @@ const CONTENT = {
     fiat:    { folderUrl: null, zipUrl: null, viewUrl: null, lastUpdate: null },
     citroen: { folderUrl: null, zipUrl: null, viewUrl: null, lastUpdate: null },
   },
-  qrs: {
+  'material-pop-qr': {
     jeep:    { folderUrl: null, zipUrl: null, viewUrl: null, lastUpdate: null },
     ram:     { folderUrl: null, zipUrl: null, viewUrl: null, lastUpdate: null },
     peugeot: { folderUrl: null, zipUrl: null, viewUrl: null, lastUpdate: null },
