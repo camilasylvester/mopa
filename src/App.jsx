@@ -12,7 +12,7 @@ export default function App() {
       window.location.hash === '#dashboard') return <Dashboard />
 
   if (window.location.pathname.startsWith('/byc') ||
-      window.location.hostname === 'byc.promomopar.com') return <BBCC />
+      window.location.hostname === 'byc.serviciomopar.com') return <BBCC />
 
   // Lifted state: which module card is open + selected brands per module
   const [openModule, setOpenModule]       = useState(null)
