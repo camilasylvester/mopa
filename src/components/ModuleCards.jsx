@@ -41,15 +41,14 @@ function ActionBtn({ href, icon: Icon, label, accent = false, disabled = false }
 
 // ─── BBCC: documento único para todas las marcas ──────────────────
 function BBCCContent() {
-  const { pdfUrl, viewUrl, vigencia } = BBCC_LINKS
+  const { viewUrl, vigencia } = BBCC_LINKS
   return (
     <div style={{ animation: 'slideDown 0.3s cubic-bezier(0.22,1,0.36,1) forwards' }}>
       <p className="text-white/35 text-xs mb-5 max-w-xl leading-relaxed">
         Las bases y condiciones aplican a todas las marcas participantes de la Promo Mundialista MOPAR 2026.
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <ActionBtn href={pdfUrl} icon={Download} label="Descargar PDF" accent disabled={!pdfUrl} />
-        <ActionBtn href={viewUrl} icon={Eye} label="Ver documento" disabled={!viewUrl} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <ActionBtn href={viewUrl} icon={Eye} label="Ver documento" accent disabled={!viewUrl} />
         <div className="flex items-center gap-2 px-4 py-3.5 border border-white/[0.04] rounded-[2px]">
           <Clock size={13} className="text-white/25 shrink-0" />
           <span className="text-white/30 text-xs">Vigencia: {vigencia}</span>
