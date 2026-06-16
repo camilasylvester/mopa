@@ -37,21 +37,31 @@ function getDealerList(tabId) {
 // Normalizar nombre para comparación flexible
 const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim()
 
+// Marca string from getDealerList → tab id
+const MARCA_TO_TAB = { 'Jeep': 'jeepram', 'Peugeot': 'peugeot', 'Citroën': 'citroen', 'Fiat': 'fiat' }
+
+// Build per-brand countMaps so a Peugeot registration never counts for Citroën etc.
+function buildBrandCountMaps(allData) {
+  const maps = {}
+  MARCA_TABS.filter(t => t.id !== 'all').forEach(t => {
+    const m = {}
+    filterByMarca(allData, t.id).forEach(r => {
+      if (r.concesionario) { const k = norm(r.concesionario); m[k] = (m[k] || 0) + 1 }
+    })
+    maps[t.id] = m
+  })
+  return maps
+}
+
 // ─── XLSX concesionarios (para el cliente) ────────────────────
 async function downloadConcesionariosXLSX(allData, tabId) {
-  const tab      = MARCA_TABS.find(t => t.id === tabId)
-  const filtered = filterByMarca(allData, tabId)
-
-  const countMap = {}
-  filtered.forEach(r => {
-    if (r.concesionario) {
-      const k = norm(r.concesionario)
-      countMap[k] = (countMap[k] || 0) + 1
-    }
-  })
+  const tab        = MARCA_TABS.find(t => t.id === tabId)
+  const countMaps  = buildBrandCountMaps(allData)
 
   const dealers = getDealerList(tabId)
   const rows = dealers.map(d => {
+    const brandTab = tabId !== 'all' ? tabId : (MARCA_TO_TAB[d.marca] || tabId)
+    const countMap = countMaps[brandTab] || {}
     const dn  = norm(d.concesionario)
     const key = Object.keys(countMap).find(k => k.includes(dn) || dn.includes(k)) || null
     const cnt = key ? countMap[key] : 0
@@ -117,12 +127,27 @@ function fmt(n) { return (n || 0).toLocaleString('es-AR') }
 // Conversión de concesionarios: activos / total
 function useConversionConcs(data, tabId) {
   return useMemo(() => {
-    const filtered = filterByMarca(data, tabId)
-    const registeredNorms = new Set(filtered.map(r => norm(r.concesionario)).filter(Boolean))
     const dealers = getDealerList(tabId)
+
+    if (tabId !== 'all') {
+      const norms = new Set(filterByMarca(data, tabId).map(r => norm(r.concesionario)).filter(Boolean))
+      const active = dealers.filter(d => {
+        const dn = norm(d.concesionario)
+        return [...norms].some(k => k.includes(dn) || dn.includes(k))
+      }).length
+      return { active, total: dealers.length, pct: dealers.length > 0 ? Math.round((active / dealers.length) * 100) : 0 }
+    }
+
+    // Para 'all': match por marca para evitar que SEEWALD Peugeot cuente también para Citroën
+    const brandNorms = {}
+    MARCA_TABS.filter(t => t.id !== 'all').forEach(t => {
+      brandNorms[t.id] = new Set(filterByMarca(data, t.id).map(r => norm(r.concesionario)).filter(Boolean))
+    })
     const active = dealers.filter(d => {
+      const brandTab = MARCA_TO_TAB[d.marca] || 'all'
+      const norms = brandNorms[brandTab] || new Set()
       const dn = norm(d.concesionario)
-      return [...registeredNorms].some(k => k.includes(dn) || dn.includes(k))
+      return [...norms].some(k => k.includes(dn) || dn.includes(k))
     }).length
     return { active, total: dealers.length, pct: dealers.length > 0 ? Math.round((active / dealers.length) * 100) : 0 }
   }, [data, tabId])
