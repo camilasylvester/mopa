@@ -150,8 +150,8 @@ const CONTENT = {
 
 // BBCC: documento único para todas las marcas
 export const BBCC_LINKS = {
-  pdfUrl:  null,   // link directo al PDF en Drive
-  viewUrl: null,   // link para ver en Drive
+  pdfUrl:  null,
+  viewUrl: 'https://drive.google.com/drive/folders/1UwQIgcU86ZSZTMbnqZ-P3i8GRJ56m2Bk?usp=sharing',
   vigencia: 'Mayo 2026',
 }
 
