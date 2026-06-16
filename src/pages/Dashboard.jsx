@@ -37,6 +37,10 @@ function getDealerList(tabId) {
 // Normalizar nombre para comparación flexible
 const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim()
 
+// Match entre nombre de registro (r) y nombre de dealer (d)
+// Requiere mínimo 4 chars para substring para evitar que "SVA" (3 chars) coincida con "SVA — Av. Alvarez Thomas"
+const matchConc = (r, d) => r === d || (d.length >= 4 && r.includes(d)) || (r.length >= 4 && d.includes(r))
+
 // Marca string from getDealerList → tab id
 const MARCA_TO_TAB = { 'Jeep': 'jeepram', 'Peugeot': 'peugeot', 'Citroën': 'citroen', 'Fiat': 'fiat' }
 
@@ -63,7 +67,7 @@ async function downloadConcesionariosXLSX(allData, tabId) {
     const brandTab = tabId !== 'all' ? tabId : (MARCA_TO_TAB[d.marca] || tabId)
     const countMap = countMaps[brandTab] || {}
     const dn  = norm(d.concesionario)
-    const key = Object.keys(countMap).find(k => k.includes(dn) || dn.includes(k)) || null
+    const key = Object.keys(countMap).find(k => matchConc(k, dn)) || null
     const cnt = key ? countMap[key] : 0
     return { ...d, count: cnt, registered: cnt > 0 }
   })
@@ -133,7 +137,7 @@ function useConversionConcs(data, tabId) {
       const norms = new Set(filterByMarca(data, tabId).map(r => norm(r.concesionario)).filter(Boolean))
       const active = dealers.filter(d => {
         const dn = norm(d.concesionario)
-        return [...norms].some(k => k.includes(dn) || dn.includes(k))
+        return [...norms].some(k => matchConc(k, dn))
       }).length
       return { active, total: dealers.length, pct: dealers.length > 0 ? Math.round((active / dealers.length) * 100) : 0 }
     }
@@ -147,7 +151,7 @@ function useConversionConcs(data, tabId) {
       const brandTab = MARCA_TO_TAB[d.marca] || 'all'
       const norms = brandNorms[brandTab] || new Set()
       const dn = norm(d.concesionario)
-      return [...norms].some(k => k.includes(dn) || dn.includes(k))
+      return [...norms].some(k => matchConc(k, dn))
     }).length
     return { active, total: dealers.length, pct: dealers.length > 0 ? Math.round((active / dealers.length) * 100) : 0 }
   }, [data, tabId])
