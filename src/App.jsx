@@ -4,11 +4,14 @@ import Hero from './components/Hero.jsx'
 import ModuleCards from './components/ModuleCards.jsx'
 import Footer from './components/Footer.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+import BBCC from './pages/BBCC.jsx'
 
 export default function App() {
   if (window.location.search.includes('dashboard') ||
       window.location.pathname.startsWith('/dashboard') ||
       window.location.hash === '#dashboard') return <Dashboard />
+
+  if (window.location.pathname.startsWith('/byc')) return <BBCC />
 
   // Lifted state: which module card is open + selected brands per module
   const [openModule, setOpenModule]       = useState(null)
