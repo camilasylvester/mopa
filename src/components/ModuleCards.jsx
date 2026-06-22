@@ -45,7 +45,7 @@ function BBCCContent() {
   return (
     <div style={{ animation: 'slideDown 0.3s cubic-bezier(0.22,1,0.36,1) forwards' }}>
       <p className="text-white/35 text-xs mb-5 max-w-xl leading-relaxed">
-        Las bases y condiciones aplican a todas las marcas participantes de la Promo Mundialista MOPAR 2026.
+        Las bases y condiciones aplican a todas las marcas participantes de la Campaña Lubricantes Mopar 2026.
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <ActionBtn href={viewUrl} icon={Eye} label="Ver documento" accent disabled={!viewUrl} />
