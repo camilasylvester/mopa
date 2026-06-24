@@ -43,7 +43,7 @@ const JEEP_RAM = {
     'Trailcar',
   ],
   'Santa Fe': [
-    'Juan Jose Paso 1533',
+    'Bonavita - Juan Jose Paso 1533',
     'Nation',
     'NeoStar',
   ],
