@@ -174,7 +174,7 @@ const FIAT = {
     'Turin - Av. Urquiza 1041',
   ],
   'Entre Ríos': [
-    'Celia Torra 31',
+    'Servicio Mecánico Richard - Celia Torra 31',
     'Full Car - Av. 9 de Julio 2435',
     'Full Car - Av. Eva Perón 2508',
     'Romani',
