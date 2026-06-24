@@ -164,6 +164,7 @@ const FIAT = {
   ],
   'Córdoba': [
     'Azzurra',
+    'F.L.G. - Córdoba 644',
     'Montironi - Monseñor Pablo Cabrera 4935',
     'Montironi - Pedro J. Frías 175',
     'Motcor - Av. Presidente Perón 1500',
