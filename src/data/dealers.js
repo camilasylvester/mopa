@@ -99,6 +99,9 @@ const JEEP_RAM = {
   'Neuquén': [
     "Valley Star's",
   ],
+  'Jujuy': [
+    'Majacen - Colectora Ruta Nac. 9 Km. 10 1007',
+  ],
   'Tierra del Fuego': [
     'Viaña',
   ],
