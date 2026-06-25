@@ -59,23 +59,37 @@ function buildBrandCountMaps(allData) {
 
 // ─── XLSX concesionarios (para el cliente) ────────────────────
 async function downloadConcesionariosXLSX(allData, tabId) {
-  const tab        = MARCA_TABS.find(t => t.id === tabId)
-  const countMaps  = buildBrandCountMaps(allData)
-
+  const tab     = MARCA_TABS.find(t => t.id === tabId)
   const dealers = getDealerList(tabId)
 
-  // Track which countMap keys were matched to a dealer in the list
-  const matchedKeys = {}
+  // Lógica REGISTRO-céntrica: cada registro se asigna a exactamente UN dealer
+  // Esto garantiza que la suma del Excel = total del dashboard, sin doble conteo
+  const dealerCounts  = new Map()   // "marca|provincia|concesionario" → count
+  const unmatchedRegs = []          // registros sin dealer identificado
+
+  const brandTabIds = tabId === 'all'
+    ? MARCA_TABS.filter(t => t.id !== 'all').map(t => t.id)
+    : [tabId]
+
+  brandTabIds.forEach(bt => {
+    const brandRegs     = filterByMarca(allData, bt)
+    const brandDealers  = dealers.filter(d => (MARCA_TO_TAB[d.marca] || d.marca) === bt)
+    brandRegs.forEach(reg => {
+      if (!reg.concesionario) return
+      const rn      = norm(reg.concesionario)
+      const matched = brandDealers.find(d => matchConc(rn, norm(d.concesionario)))
+      if (matched) {
+        const k = `${matched.marca}|${matched.provincia}|${matched.concesionario}`
+        dealerCounts.set(k, (dealerCounts.get(k) || 0) + 1)
+      } else {
+        unmatchedRegs.push(reg)
+      }
+    })
+  })
+
   const rows = dealers.map(d => {
-    const brandTab = tabId !== 'all' ? tabId : (MARCA_TO_TAB[d.marca] || tabId)
-    const countMap = countMaps[brandTab] || {}
-    const dn  = norm(d.concesionario)
-    const key = Object.keys(countMap).find(k => matchConc(k, dn)) || null
-    const cnt = key ? countMap[key] : 0
-    if (key) {
-      if (!matchedKeys[brandTab]) matchedKeys[brandTab] = new Set()
-      matchedKeys[brandTab].add(key)
-    }
+    const k   = `${d.marca}|${d.provincia}|${d.concesionario}`
+    const cnt = dealerCounts.get(k) || 0
     return { ...d, count: cnt, registered: cnt > 0 }
   })
   rows.sort((a, b) => {
@@ -84,26 +98,14 @@ async function downloadConcesionariosXLSX(allData, tabId) {
     return b.count - a.count
   })
 
-  // Registros que no matchearon ningún dealer de la lista
-  const unmatchedRows = []
-  MARCA_TABS.filter(t => t.id !== 'all').forEach(t => {
-    if (tabId !== 'all' && t.id !== tabId) return
-    const countMap = countMaps[t.id] || {}
-    const matched  = matchedKeys[t.id] || new Set()
-    Object.entries(countMap).forEach(([key, cnt]) => {
-      if (!matched.has(key)) {
-        const sample = filterByMarca(allData, t.id).find(r => norm(r.concesionario) === key)
-        unmatchedRows.push({
-          marca:        sample?.marca || t.label,
-          provincia:    sample?.provincia || '—',
-          concesionario: sample?.concesionario || key,
-          count: cnt,
-          registered: true,
-          unmatched: true,
-        })
-      }
-    })
+  // Agrupar los no identificados para mostrarlos al final
+  const unmatchedMap = {}
+  unmatchedRegs.forEach(r => {
+    const k = `${r.marca}|${r.provincia}|${r.concesionario}`
+    if (!unmatchedMap[k]) unmatchedMap[k] = { marca: r.marca, provincia: r.provincia, concesionario: r.concesionario, count: 0 }
+    unmatchedMap[k].count++
   })
+  const unmatchedRows = Object.values(unmatchedMap)
 
   const wb    = new ExcelJS.Workbook()
   const sheet = wb.addWorksheet('Concesionarios')
