@@ -80,7 +80,7 @@ const JEEP_RAM = {
     'Resasco',
   ],
   'Córdoba': [
-    'JEA',
+    'JEA - Urquiza 1002',
     'Montironi',
     'Rubic - Av. Santa Ana 6363',
     'Rubic - Enlace de Ruta A 005 - Calle Estado de Palestina 2086 km 3,1',
