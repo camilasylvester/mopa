@@ -63,18 +63,46 @@ async function downloadConcesionariosXLSX(allData, tabId) {
   const countMaps  = buildBrandCountMaps(allData)
 
   const dealers = getDealerList(tabId)
+
+  // Track which countMap keys were matched to a dealer in the list
+  const matchedKeys = {}
   const rows = dealers.map(d => {
     const brandTab = tabId !== 'all' ? tabId : (MARCA_TO_TAB[d.marca] || tabId)
     const countMap = countMaps[brandTab] || {}
     const dn  = norm(d.concesionario)
     const key = Object.keys(countMap).find(k => matchConc(k, dn)) || null
     const cnt = key ? countMap[key] : 0
+    if (key) {
+      if (!matchedKeys[brandTab]) matchedKeys[brandTab] = new Set()
+      matchedKeys[brandTab].add(key)
+    }
     return { ...d, count: cnt, registered: cnt > 0 }
   })
   rows.sort((a, b) => {
     if (a.registered && !b.registered) return -1
     if (!a.registered && b.registered) return 1
     return b.count - a.count
+  })
+
+  // Registros que no matchearon ningún dealer de la lista
+  const unmatchedRows = []
+  MARCA_TABS.filter(t => t.id !== 'all').forEach(t => {
+    if (tabId !== 'all' && t.id !== tabId) return
+    const countMap = countMaps[t.id] || {}
+    const matched  = matchedKeys[t.id] || new Set()
+    Object.entries(countMap).forEach(([key, cnt]) => {
+      if (!matched.has(key)) {
+        const sample = filterByMarca(allData, t.id).find(r => norm(r.concesionario) === key)
+        unmatchedRows.push({
+          marca:        sample?.marca || t.label,
+          provincia:    sample?.provincia || '—',
+          concesionario: sample?.concesionario || key,
+          count: cnt,
+          registered: true,
+          unmatched: true,
+        })
+      }
+    })
   })
 
   const wb    = new ExcelJS.Workbook()
@@ -109,6 +137,25 @@ async function downloadConcesionariosXLSX(allData, tabId) {
       cell.font = { color: fontColor }
     })
   })
+
+  // Filas no identificadas (en amarillo) — para que el total cuadre con el dashboard
+  if (unmatchedRows.length > 0) {
+    const sepRow = sheet.addRow({ marca: '', provincia: '', concesionario: '⚠ Sin identificar en la lista de concesionarios', estado: '', count: '' })
+    sepRow.eachCell(cell => {
+      cell.font = { bold: true, color: { argb: 'FF7B4F00' } }
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF2CC' } }
+    })
+    unmatchedRows.forEach(r => {
+      const row = sheet.addRow({
+        marca: r.marca, provincia: r.provincia, concesionario: r.concesionario,
+        estado: 'REGISTRADO *', count: r.count,
+      })
+      row.eachCell(cell => {
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF2CC' } }
+        cell.font = { color: { argb: 'FF7B4F00' } }
+      })
+    })
+  }
 
   const buffer = await wb.xlsx.writeBuffer()
   const blob   = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
