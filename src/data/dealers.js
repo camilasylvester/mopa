@@ -432,6 +432,7 @@ const CITROEN = {
     'AUTOMOBILES LYON - Av. Rivadavia 13.202',
     'AVEC BUENOS AIRES',
     'CHAMBORD',
+    'GRUPO AUTOFRANCE - Av. Sta. Fe 2458',
     "CI'DANE",
     'DAMVILLE - Av. E. Zeballos 2105 esquina La Cautiva',
     'DAMVILLE - Av. Hipólito Yrigoyen 8563',
