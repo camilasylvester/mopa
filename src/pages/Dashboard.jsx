@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Download, LogOut, Users, TrendingUp, MapPin, RefreshCw, AlertCircle, Store } from 'lucide-react'
+import { Download, LogOut, Users, TrendingUp, MapPin, RefreshCw, AlertCircle, Store, Camera } from 'lucide-react'
 import ExcelJS from 'exceljs'
 import { supabase, TABLE } from '../lib/supabase.js'
 import { DEALERS } from '../data/dealers.js'
+import { EVIDENCIA_POP } from '../data/evidencia.js'
 
 const PASSWORD  = 'promomopar'
 const PAGE_SIZE = 50
@@ -40,6 +41,13 @@ const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '
 // Match entre nombre de registro (r) y nombre de dealer (d)
 // Requiere mínimo 4 chars para substring para evitar que "SVA" (3 chars) coincida con "SVA — Av. Alvarez Thomas"
 const matchConc = (r, d) => r === d || (d.length >= 4 && r.includes(d)) || (r.length >= 4 && d.includes(r))
+
+// Clave normalizada para buscar en EVIDENCIA_POP
+// Jeep / RAM → Jeep (para coincidir con la clave en dealers.js)
+function hasEvidencia(marca, provincia, concesionario) {
+  const m = marca === 'Jeep / RAM' ? 'Jeep' : marca
+  return EVIDENCIA_POP.has(`${m}|${provincia}|${concesionario}`)
+}
 
 // Marca string from getDealerList → tab id
 const MARCA_TO_TAB = { 'Jeep': 'jeepram', 'Peugeot': 'peugeot', 'Citroën': 'citroen', 'Fiat': 'fiat' }
@@ -111,11 +119,12 @@ async function downloadConcesionariosXLSX(allData, tabId) {
   const sheet = wb.addWorksheet('Concesionarios')
 
   sheet.columns = [
-    { header: 'Marca',        key: 'marca',        width: 18 },
-    { header: 'Provincia',    key: 'provincia',     width: 22 },
-    { header: 'Concesionario',key: 'concesionario', width: 42 },
-    { header: 'Estado',       key: 'estado',        width: 18 },
-    { header: 'Registros',    key: 'count',         width: 12 },
+    { header: 'Marca',         key: 'marca',        width: 18 },
+    { header: 'Provincia',     key: 'provincia',     width: 22 },
+    { header: 'Concesionario', key: 'concesionario', width: 42 },
+    { header: 'Estado',        key: 'estado',        width: 18 },
+    { header: 'Registros',     key: 'count',         width: 12 },
+    { header: 'Evidencia POP', key: 'evidencia',     width: 16 },
   ]
 
   // Header styling
@@ -126,9 +135,11 @@ async function downloadConcesionariosXLSX(allData, tabId) {
   })
 
   rows.forEach(r => {
+    const ev = hasEvidencia(r.marca, r.provincia, r.concesionario)
     const row = sheet.addRow({
       marca: r.marca, provincia: r.provincia, concesionario: r.concesionario,
       estado: r.registered ? 'REGISTRADO' : 'NO REGISTRADO', count: r.count,
+      evidencia: ev ? 'SI' : 'NO',
     })
     const fill = r.registered
       ? { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC6EFCE' } }
@@ -138,6 +149,12 @@ async function downloadConcesionariosXLSX(allData, tabId) {
       cell.fill = fill
       cell.font = { color: fontColor }
     })
+    // Celda Evidencia POP: verde brillante si subió, hereda color de fila si no
+    const evCell = row.getCell('evidencia')
+    if (ev) {
+      evCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF00B050' } }
+      evCell.font = { color: { argb: 'FFFFFFFF' }, bold: true }
+    }
   })
 
   // Filas no identificadas (en amarillo) — para que el total cuadre con el dashboard
@@ -203,6 +220,37 @@ function useConversionConcs(data, tabId) {
       return [...norms].some(k => matchConc(k, dn))
     }).length
     return { active, total: dealers.length, pct: dealers.length > 0 ? Math.round((active / dealers.length) * 100) : 0 }
+  }, [data, tabId])
+}
+
+// % de concesionarios REGISTRADOS que subieron evidencia POP
+function useEvidenciaMetric(data, tabId) {
+  return useMemo(() => {
+    const dealers = getDealerList(tabId)
+
+    let registeredDealers
+    if (tabId !== 'all') {
+      const norms = new Set(filterByMarca(data, tabId).map(r => norm(r.concesionario)).filter(Boolean))
+      registeredDealers = dealers.filter(d => {
+        const dn = norm(d.concesionario)
+        return [...norms].some(k => matchConc(k, dn))
+      })
+    } else {
+      const brandNorms = {}
+      MARCA_TABS.filter(t => t.id !== 'all').forEach(t => {
+        brandNorms[t.id] = new Set(filterByMarca(data, t.id).map(r => norm(r.concesionario)).filter(Boolean))
+      })
+      registeredDealers = dealers.filter(d => {
+        const brandTab = MARCA_TO_TAB[d.marca] || 'all'
+        const norms    = brandNorms[brandTab] || new Set()
+        const dn       = norm(d.concesionario)
+        return [...norms].some(k => matchConc(k, dn))
+      })
+    }
+
+    const total       = registeredDealers.length
+    const withEv      = registeredDealers.filter(d => hasEvidencia(d.marca, d.provincia, d.concesionario)).length
+    return { total, withEv, pct: total > 0 ? Math.round((withEv / total) * 100) : 0 }
   }, [data, tabId])
 }
 
@@ -408,6 +456,7 @@ export default function Dashboard() {
   const convPeugeot   = useConversionConcs(data, 'peugeot')
   const convCitroen   = useConversionConcs(data, 'citroen')
   const convFiat      = useConversionConcs(data, 'fiat')
+  const evidMetric    = useEvidenciaMetric(data, tab)
 
   const topProvincias = useMemo(() => {
     const c = {}
@@ -468,10 +517,11 @@ export default function Dashboard() {
         {/* ── 1. Métricas principales ── */}
         <div>
           <div className="flex items-center gap-3 mb-4"><span className="w-5 h-[2px] bg-[#0066B3]" /><p className="font-condensed text-gray-400 text-[0.68rem] uppercase tracking-[0.2em] font-semibold">Métricas de performance</p></div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-            <MetricCard label="Participantes"            value={fmt(participantes)}                          icon={Users}      accent="#0066B3" />
-            <MetricCard label="Concesionarios activos"   value={`${convGeneral.active} / ${convGeneral.total}`} icon={Store}      accent="#4ade80" sub="Con al menos 1 registro" />
-            <MetricCard label="Conversión concesionarios" value={`${convGeneral.pct}%`}                      icon={TrendingUp} accent="#fb923c" sub={`${convGeneral.active} de ${convGeneral.total} concesionarios`} />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <MetricCard label="Participantes"              value={fmt(participantes)}                              icon={Users}      accent="#0066B3" />
+            <MetricCard label="Concesionarios activos"     value={`${convGeneral.active} / ${convGeneral.total}`} icon={Store}      accent="#4ade80" sub="Con al menos 1 registro" />
+            <MetricCard label="Conversión concesionarios"  value={`${convGeneral.pct}%`}                          icon={TrendingUp} accent="#fb923c" sub={`${convGeneral.active} de ${convGeneral.total} concesionarios`} />
+            <MetricCard label="Evidencia POP subida"       value={`${evidMetric.pct}%`}                           icon={Camera}     accent="#7c3aed" sub={`${evidMetric.withEv} de ${evidMetric.total} registrados`} />
           </div>
 
           {/* Conversión por marca */}
