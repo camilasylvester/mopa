@@ -230,6 +230,7 @@ const FIAT = {
     'Avec',
     'Mendez Automotores - Bv. 12 de octubre 950',
     'Mendez Automotores - Sarmiento 1344',
+    'Nation',
     'Seprio',
     'Valmotors - Conscripto Zurbriggen 667 – Ruta 34 Km 222',
     'Valmotors - San Luis 3102',
