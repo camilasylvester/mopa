@@ -19,12 +19,12 @@ const JEEP_RAM = {
   'Buenos Aires': [
     'A. Russoniello - Colectora Rawson de Dellepiane 289',
     'A. Russoniello - José Cebey 1637, Rincon de Milberg',
-    'Car District',
+    'Trepat',
     'Car One',
     'Cardys',
-    'Center Valley',
+    'Cabowe',
     'Del Río Servicios',
-    'Freeway',
+    'Moena',
     'Giama',
     'J. Pesado Castro',
     'Jack Cars',
@@ -184,7 +184,7 @@ const FIAT = {
     'Valmotors',
   ],
   'Formosa': [
-    'ZL Auto',
+    'MAPIC S.A.',
   ],
   'Jujuy': [
     'Fadua',
@@ -238,8 +238,8 @@ const FIAT = {
     'Novara Automotores',
   ],
   'Tierra del Fuego': [
-    'LASAC - Av. General Don José de San Martín 2599',
-    'LASAC - Av. Piedrabuena 256',
+    'Liendo - Av. General Don José de San Martín 2599',
+    'Liendo - Av. Piedrabuena 256',
   ],
   'Tucumán': [
     'Fadua',
