@@ -50,6 +50,25 @@ export const EVIDENCIA_POP = new Set([
   'Fiat|Santa Fe|Mendez Automotores - Bv. 12 de octubre 950',
   'Fiat|Santa Fe|Mendez Automotores - Sarmiento 1344',
 
+  // ── CITROËN ──────────────────────────────────────────────────────
+  'Citroën|Buenos Aires|SVA S.A.C.I.F.I.',
+  "Citroën|Buenos Aires|L'EFFORT - Av. Comandante Espora 1284",
+  "Citroën|Buenos Aires|L'EFFORT",
+  'Citroën|CABA|LA VOITURE - Av. Rivadavia 7702',
+  'Citroën|CABA|LA VOITURE - Coronel Ramon Lista 5050',
+  'Citroën|Gran Buenos Aires|AUTOFRANCE',
+  'Citroën|Gran Buenos Aires|NAVE MOTORS - Hipólito Yrigoyen 277',
+  'Citroën|Gran Buenos Aires|NAVE MOTORS - Hipólito Yrigoyen 290',
+  'Citroën|Entre Ríos|GERLI',
+  'Citroën|Misiones|SEEWALD',
+  'Citroën|Neuquén|PIRE RAYEN',
+  'Citroën|Río Negro|ARMORIQUE',
+  'Citroën|Salta|EURODYCAR',
+  'Citroën|San Juan|LORENZO',
+  'Citroën|Santa Fe|AUT. J. PESADO CASTRO',
+  'Citroën|Santa Fe|NATION - Belgrano 2601 y Av. Allen',
+  'Citroën|Santa Fe|NATION - Suipacha 70',
+
   // ── PEUGEOT ──────────────────────────────────────────────────────
   'Peugeot|Buenos Aires|CORCEL',
   'Peugeot|CABA|SVA - Rocamora 4538',
