@@ -21,6 +21,35 @@ export const EVIDENCIA_POP = new Set([
   'Jeep|Santa Fe|NeoStar',
   'Jeep|Tucumán|Brook Motors',
 
+  // ── FIAT ─────────────────────────────────────────────────────────
+  // Buenos Aires (foto — todos menos Montanari)
+  'Fiat|Buenos Aires|Aliva - Av. Belgrano 369',
+  'Fiat|Buenos Aires|Auto del Sol - Av. Bartolomé Mitre 1351',
+  'Fiat|Buenos Aires|Autofrance',
+  'Fiat|Buenos Aires|Bahía Automotores - Ruta 226 KM 295',
+  'Fiat|Buenos Aires|Bahía Automotores - Av. España 650',
+  'Fiat|Buenos Aires|Cardys - Av. Casey 850',
+  'Fiat|Buenos Aires|Cardys - Av. García Salinas 2196',
+  'Fiat|Buenos Aires|Rotter - Av. Ricardo Balbín 1970',
+  'Fiat|Buenos Aires|Rotter - Monseñor Bufano 3250',
+  'Fiat|Buenos Aires|Venezia Auto',
+  'Fiat|Buenos Aires|Verona Automóviles S.A.',
+  // Resto de provincias
+  'Fiat|Chubut|Autoterra',
+  'Fiat|Chubut|Fiorasi - Fontana 116',
+  'Fiat|Chubut|Fiorasi - Av. Eva Perón 2020',
+  'Fiat|Córdoba|Azzurra',
+  'Fiat|Córdoba|F.L.G. - Córdoba 644',
+  'Fiat|Jujuy|Fadua',
+  'Fiat|La Pampa|Genova Automotores - Av. P. Luro 1795',
+  'Fiat|Mendoza|Denver - Av. 25 de Mayo 5555',
+  'Fiat|Mendoza|Lorenzo Automotores - Bandera de los Andes 1531',
+  'Fiat|Río Negro|Bahía Automotores',
+  'Fiat|Salta|Fadua',
+  'Fiat|San Juan|Itala',
+  'Fiat|Santa Fe|Mendez Automotores - Bv. 12 de octubre 950',
+  'Fiat|Santa Fe|Mendez Automotores - Sarmiento 1344',
+
   // ── PEUGEOT ──────────────────────────────────────────────────────
   'Peugeot|Buenos Aires|CORCEL',
   'Peugeot|CABA|SVA - Rocamora 4538',
