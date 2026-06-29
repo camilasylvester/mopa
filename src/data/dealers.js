@@ -243,7 +243,7 @@ const FIAT = {
     'Liendo - Av. Piedrabuena 256',
   ],
   'Tucumán': [
-    'Fadua',
+    'Fadua - Av. Roca 2653',
     'Piazza - Don Bosco 2519/2525',
     'Piazza - Don Bosco 2537',
   ],
