@@ -21,7 +21,7 @@ const JEEP_RAM = {
     'A. Russoniello - José Cebey 1637, Rincon de Milberg',
     'Trepat',
     'Car One',
-    'Cardys',
+    'Overland Motor - Junin 51',
     'Cabowe',
     'Del Río Servicios',
     'Moena',
