@@ -521,7 +521,7 @@ export default function Dashboard() {
             <MetricCard label="Participantes"              value={fmt(participantes)}                              icon={Users}      accent="#0066B3" />
             <MetricCard label="Concesionarios activos"     value={`${convGeneral.active} / ${convGeneral.total}`} icon={Store}      accent="#4ade80" sub="Con al menos 1 registro" />
             <MetricCard label="Conversión concesionarios"  value={`${convGeneral.pct}%`}                          icon={TrendingUp} accent="#fb923c" sub={`${convGeneral.active} de ${convGeneral.total} concesionarios`} />
-            <MetricCard label="Evidencia POP subida"       value={`${evidMetric.pct}%`}                           icon={Camera}     accent="#7c3aed" sub={`${evidMetric.withEv} de ${evidMetric.total} registrados`} />
+            <MetricCard label="Evidencia POP subida"       value={fmt(EVIDENCIA_POP.size)}                        icon={Camera}     accent="#7c3aed" sub={`${evidMetric.withEv} de ${evidMetric.total} registrados también`} />
           </div>
 
           {/* Conversión por marca */}
