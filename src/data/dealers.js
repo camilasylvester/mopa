@@ -22,6 +22,7 @@ const JEEP_RAM = {
     'Trepat',
     'Car One',
     'Overland Motor - Junin 51',
+    'Overland Motor - Av. García Salinas 2196',
     'Cabowe',
     'Del Río Servicios',
     'Moena',
